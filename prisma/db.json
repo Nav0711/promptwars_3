@@ -1,0 +1,343 @@
+{
+  "users": [
+    {
+      "id": "mify7fw",
+      "createdAt": "2026-06-14T10:45:37.490Z",
+      "ecoPoints": 505,
+      "currentStreak": 2,
+      "longestStreak": 2,
+      "lastLogDate": "2026-06-16T05:13:19.287Z",
+      "email": "example@gmail.com",
+      "name": "Navdeep ",
+      "baselineProfile": {
+        "housing": "apartment",
+        "heating": "gas",
+        "householdSize": 2,
+        "transitMode": "none",
+        "transitDistance": 50,
+        "diet": "omnivore",
+        "meatMeals": 7,
+        "electricity": 375,
+        "water": 3000
+      },
+      "baselineFootprintKgCO2e": 624
+    },
+    {
+      "id": "comp-emma",
+      "name": "Emma Green",
+      "email": "emma@ecoloop.org",
+      "createdAt": "2026-06-14T10:45:38.777Z",
+      "baselineProfile": {},
+      "baselineFootprintKgCO2e": 450,
+      "ecoPoints": 480,
+      "currentStreak": 8,
+      "longestStreak": 12,
+      "lastLogDate": "2026-06-14T10:45:38.777Z"
+    },
+    {
+      "id": "comp-alex",
+      "name": "Alex Soil",
+      "email": "alex@ecoloop.org",
+      "createdAt": "2026-06-14T10:45:38.777Z",
+      "baselineProfile": {},
+      "baselineFootprintKgCO2e": 520,
+      "ecoPoints": 340,
+      "currentStreak": 5,
+      "longestStreak": 5,
+      "lastLogDate": "2026-06-14T10:45:38.777Z"
+    },
+    {
+      "id": "comp-sarah",
+      "name": "Sarah Breeze",
+      "email": "sarah@ecoloop.org",
+      "createdAt": "2026-06-14T10:45:38.777Z",
+      "baselineProfile": {},
+      "baselineFootprintKgCO2e": 380,
+      "ecoPoints": 210,
+      "currentStreak": 3,
+      "longestStreak": 7,
+      "lastLogDate": "2026-06-14T10:45:38.777Z"
+    },
+    {
+      "id": "comp-david",
+      "name": "David Wave",
+      "email": "david@ecoloop.org",
+      "createdAt": "2026-06-14T10:45:38.777Z",
+      "baselineProfile": {},
+      "baselineFootprintKgCO2e": 610,
+      "ecoPoints": 120,
+      "currentStreak": 1,
+      "longestStreak": 3,
+      "lastLogDate": "2026-06-14T10:45:38.777Z"
+    }
+  ],
+  "carbonLogs": [
+    {
+      "id": "x2qe8zg",
+      "loggedAt": "2026-06-14T10:52:39.778Z",
+      "userId": "mify7fw",
+      "rawInputText": "i took the bus for 12 km and had a vegan salad",
+      "activityDate": "2026-06-14T10:52:39.774Z",
+      "parsedActivities": [
+        {
+          "category": "transport",
+          "subcategory": "bus",
+          "description": "Bus commute (12 km)",
+          "quantity": 12,
+          "unit": "km",
+          "confidence": 0.85,
+          "co2eKg": 1.26
+        },
+        {
+          "category": "food",
+          "subcategory": "vegan",
+          "description": "Vegan meal",
+          "quantity": 1,
+          "unit": "meal",
+          "confidence": 0.9,
+          "co2eKg": 0.59
+        }
+      ],
+      "totalCo2eKg": 1.85,
+      "source": "chat"
+    },
+    {
+      "id": "8ll9svq",
+      "loggedAt": "2026-06-14T11:41:42.671Z",
+      "userId": "mify7fw",
+      "rawInputText": "took bus for 5km",
+      "activityDate": "2026-06-14T11:41:42.628Z",
+      "parsedActivities": [
+        {
+          "category": "transport",
+          "subcategory": "bus",
+          "description": "Bus commute (5 km)",
+          "quantity": 5,
+          "unit": "km",
+          "confidence": 0.85,
+          "co2eKg": 0.525
+        }
+      ],
+      "totalCo2eKg": 0.525,
+      "source": "chat"
+    },
+    {
+      "id": "2jaze1f",
+      "loggedAt": "2026-06-16T05:13:19.285Z",
+      "userId": "mify7fw",
+      "rawInputText": "I took the bus for 15 km today.",
+      "activityDate": "2026-06-16T05:13:19.269Z",
+      "parsedActivities": [
+        {
+          "category": "transport",
+          "subcategory": "bus",
+          "description": "Bus commute (15 km)",
+          "quantity": 15,
+          "unit": "km",
+          "confidence": 0.85,
+          "co2eKg": 1.575
+        }
+      ],
+      "totalCo2eKg": 1.575,
+      "source": "chat"
+    }
+  ],
+  "ecosystemStates": [
+    {
+      "id": "u2si2il",
+      "userId": "mify7fw",
+      "healthScore": 99,
+      "weatherState": "clear",
+      "unlockedAssets": [
+        "asset_bird",
+        "asset_sprout",
+        "asset_flowering_bush"
+      ],
+      "lastUpdated": "2026-06-16T05:13:19.287Z"
+    },
+    {
+      "id": "eco-comp-emma",
+      "userId": "comp-emma",
+      "healthScore": 85,
+      "weatherState": "clear",
+      "unlockedAssets": [
+        "asset_sprout",
+        "asset_squirrel"
+      ],
+      "lastUpdated": "2026-06-14T10:45:38.777Z"
+    },
+    {
+      "id": "eco-comp-alex",
+      "userId": "comp-alex",
+      "healthScore": 68,
+      "weatherState": "clear",
+      "unlockedAssets": [
+        "asset_sprout"
+      ],
+      "lastUpdated": "2026-06-14T10:45:38.777Z"
+    },
+    {
+      "id": "eco-comp-sarah",
+      "userId": "comp-sarah",
+      "healthScore": 68,
+      "weatherState": "clear",
+      "unlockedAssets": [
+        "asset_sprout"
+      ],
+      "lastUpdated": "2026-06-14T10:45:38.777Z"
+    },
+    {
+      "id": "eco-comp-david",
+      "userId": "comp-david",
+      "healthScore": 45,
+      "weatherState": "cloudy",
+      "unlockedAssets": [
+        "asset_sprout"
+      ],
+      "lastUpdated": "2026-06-14T10:45:38.777Z"
+    }
+  ],
+  "goals": [
+    {
+      "id": "ic6rc5e",
+      "status": "active",
+      "userId": "mify7fw",
+      "type": "category_specific",
+      "targetValue": 6,
+      "category": "food",
+      "startDate": "2026-06-14T10:45:47.455Z",
+      "endDate": "2026-06-21T10:45:47.455Z"
+    },
+    {
+      "id": "yltjw0z",
+      "status": "active",
+      "userId": "mify7fw",
+      "type": "category_specific",
+      "targetValue": 4.5,
+      "category": "transport",
+      "startDate": "2026-06-16T05:08:24.596Z",
+      "endDate": "2026-06-23T05:08:24.596Z"
+    }
+  ],
+  "swapActions": [
+    {
+      "id": "rplizet",
+      "acceptedAt": "2026-06-14T10:45:47.455Z",
+      "status": "completed",
+      "userId": "mify7fw",
+      "swapTitle": "Swap your Tuesday beef lunch for a vegan bowl",
+      "analogyText": "Saves equivalent to charging your smartphone 1,170 times",
+      "reasonText": "Beef produces 6.61kg CO2e per meal, whereas a vegan meal generates just 0.59kg CO2e. Shifting just one meal makes a massive impact.",
+      "estimatedSavingsKgCO2eWeekly": 6
+    },
+    {
+      "id": "u1x8bxe",
+      "acceptedAt": "2026-06-16T05:08:24.596Z",
+      "status": "completed",
+      "abandonedAt": null,
+      "completedAt": null,
+      "embeddingVector": null,
+      "userId": "mify7fw",
+      "swapTitle": "Swap your solo car commute for the metro or bus once a week",
+      "analogyText": "Saves equivalent to driving a petrol car 23 fewer kilometres",
+      "reasonText": "Solo driving emits 0.192kg CO2e/km, while the metro emits only 0.041kg CO2e/km. Taking transit once weekly can reduce your weekly commute emissions by about 20%.",
+      "estimatedSavingsKgCO2eWeekly": 4.5
+    }
+  ],
+  "achievements": [
+    {
+      "id": "ach-first-log",
+      "code": "FIRST_LOG",
+      "title": "Welcome to the Loop",
+      "description": "Logged your first carbon activity",
+      "iconAsset": "welcome"
+    },
+    {
+      "id": "ach-streak-7",
+      "code": "STREAK_7",
+      "title": "One Week Wonder",
+      "description": "Maintained a 7-day logging streak",
+      "iconAsset": "streak_7"
+    },
+    {
+      "id": "ach-streak-30",
+      "code": "STREAK_30",
+      "title": "Habit Formed",
+      "description": "Maintained a 30-day logging streak",
+      "iconAsset": "streak_30"
+    },
+    {
+      "id": "ach-first-swap",
+      "code": "FIRST_SWAP",
+      "title": "Swap Starter",
+      "description": "Completed your first carbon swap action",
+      "iconAsset": "swap_starter"
+    },
+    {
+      "id": "ach-forest-bloom",
+      "code": "FOREST_BLOOM",
+      "title": "Thriving Ecosystem",
+      "description": "Reached an ecosystem health score of 80 or above",
+      "iconAsset": "forest_bloom"
+    },
+    {
+      "id": "ach-vegan-week",
+      "code": "VEGAN_WEEK",
+      "title": "Plant-Powered",
+      "description": "Logged 7 vegan or vegetarian meals in a single week",
+      "iconAsset": "plant_powered"
+    }
+  ],
+  "userAchievements": [
+    {
+      "id": "6g3v328",
+      "unlockedAt": "2026-06-14T10:45:49.152Z",
+      "userId": "mify7fw",
+      "achievementId": "ach-first-swap"
+    },
+    {
+      "id": "s06rrf1",
+      "unlockedAt": "2026-06-14T10:52:39.778Z",
+      "userId": "mify7fw",
+      "achievementId": "ach-first-log"
+    },
+    {
+      "id": "iltf04d",
+      "unlockedAt": "2026-06-14T11:41:42.673Z",
+      "userId": "mify7fw",
+      "achievementId": "ach-forest-bloom"
+    }
+  ],
+  "leaderboardEntries": [
+    {
+      "id": "lead-comp-emma",
+      "userId": "comp-emma",
+      "weeklyPoints": 480,
+      "groupId": "global"
+    },
+    {
+      "id": "lead-comp-alex",
+      "userId": "comp-alex",
+      "weeklyPoints": 340,
+      "groupId": "global"
+    },
+    {
+      "id": "lead-comp-sarah",
+      "userId": "comp-sarah",
+      "weeklyPoints": 210,
+      "groupId": "global"
+    },
+    {
+      "id": "lead-comp-david",
+      "userId": "comp-david",
+      "weeklyPoints": 120,
+      "groupId": "global"
+    },
+    {
+      "id": "30ktu3d",
+      "userId": "mify7fw",
+      "weeklyPoints": 505,
+      "groupId": "PI3X-A"
+    }
+  ]
+}

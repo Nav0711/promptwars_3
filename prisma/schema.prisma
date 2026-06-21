@@ -1,0 +1,105 @@
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id              String   @id @default(uuid())
+  email           String   @unique
+  name            String
+  password        String?
+  createdAt       DateTime @default(now())
+  baselineProfile String     // onboarding survey answers: housing, transit, diet, utilities
+  baselineFootprintKgCO2e Float
+  ecoPoints       Int      @default(0)
+  currentStreak   Int      @default(0)
+  longestStreak   Int      @default(0)
+  lastLogDate     DateTime?
+  ecosystemState  EcosystemState?
+  carbonLogs      CarbonLog[]
+  goals           Goal[]
+  swapsAccepted   SwapAction[]
+  achievements    UserAchievement[]
+}
+
+model CarbonLog {
+  id           String   @id @default(uuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  rawInputText String   // original user message
+  loggedAt     DateTime @default(now())
+  activityDate DateTime // date the activity occurred (may differ from loggedAt)
+  parsedActivities String // array of {category, subcategory, description, quantity, unit, co2eKg}
+  totalCo2eKg  Float
+  source       String   @default("chat") // "chat" | "manual" | "import"
+
+  @@index([userId, activityDate])
+}
+
+model EcosystemState {
+  id              String   @id @default(uuid())
+  userId          String   @unique
+  user            User     @relation(fields: [userId], references: [id])
+  healthScore     Int      @default(50) // 0-100
+  weatherState    String   @default("clear") // clear | cloudy | polluted | stormy
+  unlockedAssets  String     // array of asset IDs (flora/fauna) unlocked via achievements
+  lastUpdated     DateTime @updatedAt
+}
+
+model Goal {
+  id           String   @id @default(uuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  type         String   // "weekly_reduction" | "monthly_target" | "category_specific"
+  targetValue  Float    // e.g., kg CO2e to stay under
+  category     String?  // null = overall, or "transport" | "food" | etc.
+  startDate    DateTime
+  endDate      DateTime
+  status       String   @default("active") // active | completed | missed
+
+  @@index([userId, status])
+}
+
+model SwapAction {
+  id              String   @id @default(uuid())
+  userId          String
+  user            User     @relation(fields: [userId], references: [id])
+  swapTitle        String
+  analogyText      String
+  reasonText       String
+  estimatedSavingsKgCO2eWeekly Float
+  acceptedAt       DateTime @default(now())
+  status           String   @default("active") // active | completed | abandoned
+}
+
+model Achievement {
+  id          String @id @default(uuid())
+  code        String @unique // e.g., "STREAK_7", "FIRST_SWAP", "FOREST_BLOOM"
+  title       String
+  description String
+  iconAsset   String
+  userAchievements UserAchievement[]
+}
+
+model UserAchievement {
+  id            String   @id @default(uuid())
+  userId        String
+  user            User     @relation(fields: [userId], references: [id])
+  achievementId String
+  achievement   Achievement @relation(fields: [achievementId], references: [id])
+  unlockedAt    DateTime @default(now())
+}
+
+model LeaderboardEntry {
+  id          String @id @default(uuid())
+  userId      String @unique
+  weeklyPoints Int   @default(0)
+  rank        Int?
+  groupId     String? // for friend-group leaderboards
+
+  @@index([groupId, weeklyPoints])
+}
