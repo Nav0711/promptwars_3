@@ -11,7 +11,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Check if user already exists
-    const existingUser = await db.user.findUnique({ where: { email } });
+    const existingUser = await db.user.findUnique({ where: { email }, select: { id: true } });
     if (existingUser) {
       return NextResponse.json({ error: 'User with this email already exists' }, { status: 409 });
     }
@@ -26,7 +26,14 @@ export async function POST(req: NextRequest) {
         name,
         password: hashedPassword,
         baselineProfile: JSON.stringify({ completed: false }),
-        baselineFootprintKgCO2e: 0.0
+        baselineFootprintKgCO2e: 0.0,
+        ecosystemState: {
+          create: {
+            healthScore: 50,
+            weatherState: 'clear',
+            unlockedAssets: JSON.stringify([])
+          }
+        }
       }
     });
 

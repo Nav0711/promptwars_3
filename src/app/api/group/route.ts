@@ -27,7 +27,10 @@ export async function POST(req: NextRequest) {
 
       // For the mock DB, search through leaderboard entries for matching groupId
       // GroupId is the invite code itself for simplicity
-      const user = await db.user.findUnique({ where: { id: userId } });
+      const user = await db.user.findUnique({ 
+        where: { id: userId },
+        select: { ecoPoints: true }
+      });
       if (!user) return NextResponse.json({ error: 'User not found' }, { status: 404 });
 
       // Update user's leaderboard entry to use this groupId
@@ -47,7 +50,10 @@ export async function POST(req: NextRequest) {
     // Default: create a new group
     const inviteCodeNew = nanoid(6).toUpperCase();
 
-    const user = await db.user.findUnique({ where: { id: userId } });
+    const user = await db.user.findUnique({ 
+      where: { id: userId },
+      select: { ecoPoints: true }
+    });
     if (!user) return NextResponse.json({ error: 'User not found' }, { status: 404 });
 
     // Creator joins their own group immediately

@@ -43,7 +43,7 @@ export default function Sidebar({ activeTab, setActiveTab, onOpenChat }: Sidebar
 
       <div className="flex flex-col h-full p-5 gap-4">
         {/* Logo */}
-        <div className="flex items-center gap-2.5 px-1 py-1">
+        <header className="flex items-center gap-2.5 px-1 py-1">
           <div className="relative">
             <div className="w-8 h-8 rounded-xl flex items-center justify-center"
               style={{ background: 'rgba(56,189,248,0.12)', border: '1px solid rgba(56,189,248,0.25)' }}>
@@ -57,7 +57,7 @@ export default function Sidebar({ activeTab, setActiveTab, onOpenChat }: Sidebar
             </h1>
             <p className="text-[10px] font-mono" style={{ color: 'var(--text-muted)' }}>v3.0 · AI-Powered</p>
           </div>
-        </div>
+        </header>
 
         <div className="divider" />
 
@@ -72,6 +72,8 @@ export default function Sidebar({ activeTab, setActiveTab, onOpenChat }: Sidebar
                 onClick={() => setActiveTab(item.id)}
                 onMouseEnter={() => setHoveredItem(item.id)}
                 onMouseLeave={() => setHoveredItem(null)}
+                aria-label={item.label}
+                aria-current={isActive ? 'page' : undefined}
                 className={`nav-item w-full text-left ripple ${isActive ? 'active' : ''}`}
               >
                 <Icon className="w-4 h-4 shrink-0" />
@@ -103,6 +105,7 @@ export default function Sidebar({ activeTab, setActiveTab, onOpenChat }: Sidebar
         {/* AI Logger CTA */}
         <button
           onClick={onOpenChat}
+          aria-label="Log Activity"
           className="btn-primary w-full ripple group"
           style={{ background: 'linear-gradient(135deg, var(--accent-blue), #0ea5e9)' }}
         >
@@ -118,6 +121,7 @@ export default function Sidebar({ activeTab, setActiveTab, onOpenChat }: Sidebar
           {/* Profile link */}
           <Link
             href="/profile"
+            aria-label="View Profile"
             className="flex items-center gap-2.5 p-2.5 rounded-xl transition-all group"
             style={{ border: '1px solid var(--border-subtle)' }}
             onMouseEnter={e => {
@@ -148,6 +152,7 @@ export default function Sidebar({ activeTab, setActiveTab, onOpenChat }: Sidebar
           {/* Theme toggle */}
           <button
             onClick={toggleTheme}
+            aria-label={isDark ? "Switch to Light Mode" : "Switch to Dark Mode"}
             className="flex items-center gap-2.5 p-2.5 rounded-xl transition-all ripple w-full text-left"
             style={{ border: '1px solid var(--border-subtle)', color: 'var(--text-muted)' }}
             onMouseEnter={e => {

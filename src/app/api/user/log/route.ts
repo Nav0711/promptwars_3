@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { db, USER_SELECT } from '@/lib/db';
 import { updateEcosystemAndPoints } from '@/lib/ecosystem';
 
 export async function GET(req: NextRequest) {
@@ -71,7 +71,10 @@ export async function POST(req: NextRequest) {
     const ecosystemResult = await updateEcosystemAndPoints(userId, categoryEmissions, true);
 
     // Fetch fresh user data
-    const user = await db.user.findUnique({ where: { id: userId } });
+    const user = await db.user.findUnique({ 
+      where: { id: userId },
+      select: USER_SELECT
+    });
     const ecosystem = await db.ecosystemState.findUnique({ where: { userId } });
     const achievements = await db.userAchievement.findMany({
       where: { userId },

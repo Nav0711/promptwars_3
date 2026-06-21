@@ -17,7 +17,7 @@ interface DayInsight {
   source: 'gemini' | 'fallback';
 }
 
-export default function WeeklyChart({ logs }: WeeklyChartProps) {
+export default React.memo(function WeeklyChart({ logs }: WeeklyChartProps) {
   const [selectedDay, setSelectedDay] = useState<any | null>(null);
   const [dayInsight, setDayInsight] = useState<DayInsight | null>(null);
   const [loadingInsight, setLoadingInsight] = useState(false);
@@ -91,7 +91,7 @@ export default function WeeklyChart({ logs }: WeeklyChartProps) {
   };
 
   return (
-    <div className="glass-panel rounded-2xl p-4 md:p-5 space-y-4">
+    <figure className="glass-panel rounded-2xl p-4 md:p-5 space-y-4">
       <div className="flex items-center justify-between">
         <div>
           <h2 className="font-heading font-semibold text-sm flex items-center gap-1.5" style={{ color: 'var(--text-primary)' }}>
@@ -138,8 +138,8 @@ export default function WeeklyChart({ logs }: WeeklyChartProps) {
       {/* Insight panel */}
       <AnimatePresence mode="wait">
         {selectedDay && (
-          <motion.div key={selectedDay.date} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.18 }}
-            className="rounded-xl p-3.5 space-y-2"
+          <motion.figcaption key={selectedDay.date} initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.18 }}
+            className="rounded-xl p-3.5 space-y-2 block"
             style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-subtle)' }}>
             <div className="flex items-center justify-between">
               <span className="text-[10px] font-mono font-bold" style={{ color: 'var(--text-muted)' }}>{selectedDay.date}</span>
@@ -163,9 +163,9 @@ export default function WeeklyChart({ logs }: WeeklyChartProps) {
                 </p>
               </div>
             ) : null}
-          </motion.div>
+          </motion.figcaption>
         )}
       </AnimatePresence>
-    </div>
+    </figure>
   );
-}
+});

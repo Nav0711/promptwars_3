@@ -37,7 +37,7 @@ export default function SwapCheckIn({ swap, userId, onComplete }: SwapCheckInPro
   return (
     <AnimatePresence>
       {!resolved ? (
-        <motion.div
+        <motion.section
           key="checkin"
           initial={{ opacity: 0, y: -14, scale: 0.97 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
@@ -83,12 +83,14 @@ export default function SwapCheckIn({ swap, userId, onComplete }: SwapCheckInPro
           ) : (
             <div className="relative flex gap-2.5">
               <button onClick={() => handleCheckIn('abandoned')}
+                aria-label="Abandon swap"
                 className="flex-1 py-2.5 px-3 rounded-xl text-xs font-heading font-semibold flex items-center justify-center gap-2 transition-all cursor-pointer"
                 style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-default)', color: 'var(--text-muted)' }}>
                 <XCircle className="w-3.5 h-3.5" style={{ color: 'var(--accent-rose)' }} />
                 Didn't manage it
               </button>
               <button onClick={() => handleCheckIn('completed')}
+                aria-label="Mark swap as completed"
                 className="flex-[1.5] py-2.5 px-3 rounded-xl text-xs font-heading font-bold flex items-center justify-center gap-2 transition-all cursor-pointer"
                 style={{ background: 'var(--accent-green)', color: '#fff', boxShadow: '0 4px 16px rgba(34,197,94,0.25)' }}>
                 <CheckCircle2 className="w-3.5 h-3.5" />
@@ -96,15 +98,15 @@ export default function SwapCheckIn({ swap, userId, onComplete }: SwapCheckInPro
               </button>
             </div>
           )}
-        </motion.div>
+        </motion.section>
       ) : (
-        <motion.div key="resolved" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
+        <motion.section key="resolved" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
           className="glass-panel rounded-2xl p-5 flex items-center justify-center gap-3">
           <Trophy className="w-5 h-5" style={{ color: 'var(--accent-amber)' }} />
           <span className="text-sm font-heading font-semibold" style={{ color: 'var(--text-primary)' }}>
             Logged! New challenge coming soon.
           </span>
-        </motion.div>
+        </motion.section>
       )}
     </AnimatePresence>
   );

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { db } from '@/lib/db';
+import { db, USER_SELECT } from '@/lib/db';
 
 export const dynamic = 'force-dynamic';
 
@@ -10,9 +10,9 @@ export async function GET(req: NextRequest) {
 
     let user = null;
     if (email) {
-      user = await db.user.findUnique({ where: { email } });
+      user = await db.user.findUnique({ where: { email }, select: USER_SELECT });
     } else {
-      user = await db.user.findFirst();
+      user = await db.user.findFirst({ select: USER_SELECT });
     }
 
     if (!user) {
@@ -47,7 +47,7 @@ export async function POST(req: NextRequest) {
     const profileString = typeof baselineProfile === 'string' ? baselineProfile : JSON.stringify(baselineProfile);
 
     // Check if user already exists
-    let user = await db.user.findUnique({ where: { email } });
+    let user = await db.user.findUnique({ where: { email }, select: USER_SELECT });
     if (user) {
       // Update baseline
       user = await db.user.update({
@@ -56,7 +56,8 @@ export async function POST(req: NextRequest) {
           name,
           baselineProfile: profileString,
           baselineFootprintKgCO2e
-        }
+        },
+        select: USER_SELECT
       });
       return NextResponse.json({ user });
     }
@@ -71,7 +72,8 @@ export async function POST(req: NextRequest) {
         ecoPoints: 0,
         currentStreak: 0,
         longestStreak: 0
-      }
+      },
+      select: USER_SELECT
     });
 
     const ecosystem = await db.ecosystemState.findUnique({ where: { userId: user.id } });

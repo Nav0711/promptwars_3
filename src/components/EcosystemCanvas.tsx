@@ -10,7 +10,7 @@ interface EcosystemCanvasProps {
   unlockedAssets?: string[];
 }
 
-export default function EcosystemCanvas({
+export default React.memo(function EcosystemCanvas({
   healthScore = 75,
   weatherState = 'clear',
   unlockedAssets = []
@@ -302,10 +302,11 @@ export default function EcosystemCanvas({
   })), []);
 
   return (
-    <div
+    <figure
       className="w-full h-full min-h-[300px] relative overflow-hidden rounded-2xl transition-all duration-300"
       style={{ border: '2px solid var(--border-default)', boxShadow: 'inset 0 2px 8px rgba(0,0,0,0.3)' }}
     >
+      <figcaption className="sr-only">Ecosystem Canvas showing your current environment health: {weatherState}</figcaption>
       {/* Scanline CRT effect */}
       <div
         className="absolute inset-0 pointer-events-none z-20 opacity-20 mix-blend-overlay"
@@ -313,16 +314,28 @@ export default function EcosystemCanvas({
           backgroundImage: 'linear-gradient(rgba(0,0,0,0) 50%, rgba(0,0,0,0.8) 50%)',
           backgroundSize: '100% 4px'
         }}
+        aria-hidden="true"
       />
       {/* CRT vignette */}
-      <div className="absolute inset-0 pointer-events-none z-20 rounded-2xl" style={{ boxShadow: 'inset 0 0 60px rgba(0,0,0,0.7)' }} />
+      <div className="absolute inset-0 pointer-events-none z-20 rounded-2xl" style={{ boxShadow: 'inset 0 0 60px rgba(0,0,0,0.7)' }} aria-hidden="true" />
 
       {/* ── MAIN SVG SCENE ────────────────────────────────────────────── */}
       <svg
         viewBox="0 0 160 120"
         className="w-full h-full"
         style={{ shapeRendering: 'crispEdges', imageRendering: 'pixelated' }}
+        role="img"
+        aria-labelledby="eco-title eco-desc"
       >
+        <title id="eco-title">Ecosystem Visualizer</title>
+        <desc id="eco-desc">
+          A {weatherState.toLowerCase()} ecosystem with a health score of {healthScore}.
+          {tier === 5 ? ' Lush, green with fireflies and butterflies.' :
+           tier === 4 ? ' Healthy and clear with a bird flying.' :
+           tier === 3 ? ' Cloudy and neutral.' :
+           tier === 2 ? ' Polluted and wilting with smog.' :
+           ' Stormy with rain and dead trees.'}
+        </desc>
         <defs>
           <linearGradient id="skyGrad" x1="0" y1="0" x2="0" y2="1">
             <stop offset="0%"   stopColor={p.skyTop} />
@@ -339,8 +352,9 @@ export default function EcosystemCanvas({
           </filter>
         </defs>
 
-        {/* ── Sky ─────────────────────────────────────────────────────── */}
-        <rect x="0" y="0" width="160" height="120" fill="url(#skyGrad)" />
+        <g aria-hidden="true">
+          {/* ── Sky ─────────────────────────────────────────────────────── */}
+          <rect x="0" y="0" width="160" height="120" fill="url(#skyGrad)" />
 
         {/* Stars (dark mode only) */}
         {isDark && stars.map(s => (
@@ -785,6 +799,7 @@ export default function EcosystemCanvas({
             </motion.g>
           )}
         </AnimatePresence>
+        </g>
 
       </svg>
 
@@ -812,6 +827,7 @@ export default function EcosystemCanvas({
         </span>
         {/* Clear button */}
         <button
+          aria-label="Clear HUD"
           className="font-mono text-xs px-2 py-1 border-2"
           style={{
             background: isDark ? '#1e293b' : '#9ca3af',
@@ -848,6 +864,6 @@ export default function EcosystemCanvas({
           })}
         </div>
       </div>
-    </div>
+    </figure>
   );
-}
+});

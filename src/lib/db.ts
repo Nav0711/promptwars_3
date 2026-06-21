@@ -10,6 +10,19 @@ if (isPostgresConfigured) {
   prisma = new PrismaClient();
 }
 
+export const USER_SELECT = {
+  id: true,
+  email: true,
+  name: true,
+  createdAt: true,
+  baselineProfile: true,
+  baselineFootprintKgCO2e: true,
+  ecoPoints: true,
+  currentStreak: true,
+  longestStreak: true,
+  lastLogDate: true,
+};
+
 // -------------------------------------------------------------
 // JSON MOCK DATABASE FALLBACK
 // -------------------------------------------------------------
@@ -121,18 +134,18 @@ export const db = {
   isMock: !isPostgresConfigured,
 
   user: {
-    findUnique: async ({ where }: { where: { id?: string; email?: string } }) => {
-      if (prisma) return prisma.user.findUnique({ where } as any);
+    findUnique: async ({ where, select }: { where: { id?: string; email?: string }, select?: any }) => {
+      if (prisma) return prisma.user.findUnique({ where, select } as any);
       const data = readJsonDb();
       return data.users.find(u => (where.id && u.id === where.id) || (where.email && u.email === where.email)) || null;
     },
-    findFirst: async () => {
-      if (prisma) return prisma.user.findFirst();
+    findFirst: async ({ select }: { select?: any } = {}) => {
+      if (prisma) return prisma.user.findFirst({ select } as any);
       const data = readJsonDb();
       return data.users[0] || null;
     },
-    create: async ({ data }: { data: any }) => {
-      if (prisma) return prisma.user.create({ data });
+    create: async ({ data, select }: { data: any, select?: any }) => {
+      if (prisma) return prisma.user.create({ data, select } as any);
       const dbData = readJsonDb();
       const newUser = {
         id: Math.random().toString(36).substring(2, 9),
@@ -159,8 +172,8 @@ export const db = {
       writeJsonDb(dbData);
       return newUser;
     },
-    update: async ({ where, data }: { where: { id?: string; email?: string }; data: any }) => {
-      if (prisma) return prisma.user.update({ where, data } as any);
+    update: async ({ where, data, select }: { where: { id?: string; email?: string }; data: any; select?: any }) => {
+      if (prisma) return prisma.user.update({ where, data, select } as any);
       const dbData = readJsonDb();
       const userIndex = dbData.users.findIndex(u => (where.id && u.id === where.id) || (where.email && u.email === where.email));
       if (userIndex === -1) throw new Error('User not found');

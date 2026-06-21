@@ -57,7 +57,7 @@ export default function WeeklyDigestCard({ userId, forceShow = false }: WeeklyDi
   return (
     <AnimatePresence>
       {(loading || digest) && (
-        <motion.div
+        <motion.section
           initial={{ opacity: 0, y: -12, scale: 0.97 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: -10, scale: 0.97 }}
@@ -92,7 +92,7 @@ export default function WeeklyDigestCard({ userId, forceShow = false }: WeeklyDi
                   </p>
                 </div>
               </div>
-              <button onClick={handleDismiss} className="p-1.5 rounded-lg transition-colors" style={{ color: 'var(--text-muted)' }}>
+              <button onClick={handleDismiss} aria-label="Dismiss Weekly EcoDigest" className="p-1.5 rounded-lg transition-colors" style={{ color: 'var(--text-muted)' }}>
                 <X className="w-3.5 h-3.5" />
               </button>
             </div>
@@ -152,7 +152,7 @@ export default function WeeklyDigestCard({ userId, forceShow = false }: WeeklyDi
               </div>
             )}
           </div>
-        </motion.div>
+        </motion.section>
       )}
     </AnimatePresence>
   );

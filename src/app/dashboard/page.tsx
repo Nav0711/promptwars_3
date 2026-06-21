@@ -1,18 +1,21 @@
 'use client';
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useApp } from '@/components/AppContext';
 import Sidebar from '@/components/Sidebar';
-import EcosystemCanvas from '@/components/EcosystemCanvas';
-import WeeklyChart from '@/components/WeeklyChart';
-import SwapCard from '@/components/SwapCard';
-import ChatDrawer from '@/components/ChatDrawer';
-import WeeklyDigestCard from '@/components/WeeklyDigestCard';
-import SwapCheckIn from '@/components/SwapCheckIn';
-import LogsTab from '@/components/LogsTab';
 import { useTheme } from '@/components/ThemeProvider';
-import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip as ChartTooltip } from 'recharts';
+import dynamic from 'next/dynamic';
+
+const EcosystemCanvas = dynamic(() => import('@/components/EcosystemCanvas'), { ssr: false, loading: () => <div className="animate-pulse bg-slate-800/20 w-full h-full rounded-2xl" /> });
+const WeeklyChart = dynamic(() => import('@/components/WeeklyChart'), { ssr: false, loading: () => <div className="animate-pulse bg-slate-800/20 w-full h-[200px] rounded-2xl" /> });
+const SwapCard = dynamic(() => import('@/components/SwapCard'), { ssr: false });
+const ChatDrawer = dynamic(() => import('@/components/ChatDrawer'), { ssr: false });
+const WeeklyDigestCard = dynamic(() => import('@/components/WeeklyDigestCard'), { ssr: false });
+const SwapCheckIn = dynamic(() => import('@/components/SwapCheckIn'), { ssr: false });
+const LogsTab = dynamic(() => import('@/components/LogsTab'), { ssr: false });
+const CategoryPieChart = dynamic(() => import('@/components/CategoryPieChart'), { ssr: false });
+
 import {
   Home as HomeIcon, ArrowRightLeft, BarChart3, Trophy,
   MessageSquarePlus, Leaf, Award, Users, Target, Link2,
@@ -48,12 +51,12 @@ export default function Dashboard() {
   const [goalReduction, setGoalReduction] = useState(10);
   const [socialSubTab, setSocialSubTab] = useState<'global' | 'group'>('global');
 
-  const handleReset = () => {
+  const handleReset = useCallback(() => {
     if (confirm('Reset your profile and start onboarding again?')) {
       localStorage.clear();
       window.location.href = '/onboarding';
     }
-  };
+  }, []);
 
   // Fetch group leaderboard automatically if user has a groupId
   useEffect(() => {
@@ -116,18 +119,18 @@ export default function Dashboard() {
     return leaderboard.find(e => e.userId === user.id)?.rank || '-';
   }, [user, leaderboard]);
 
-  const handleCreateGoal = async (e: React.FormEvent) => {
+  const handleCreateGoal = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     if (!user) return;
     setGoalLoading(true);
     const targetValue = Math.round(user.baselineFootprintKgCO2e * (1 - goalReduction / 100) / 4);
     await addGoal({ type: goalType, targetValue, category: goalCategory === 'overall' ? null : goalCategory, startDate: new Date().toISOString(), endDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString() });
     setGoalLoading(false);
-  };
+  }, [user, goalType, goalCategory, goalReduction, addGoal]);
 
-  const initials = user?.name
+  const initials = useMemo(() => user?.name
     ? user.name.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2)
-    : 'EC';
+    : 'EC', [user?.name]);
 
   if (loading) {
     return (
@@ -417,18 +420,7 @@ export default function Dashboard() {
                     ) : (
                       <div className="grid grid-cols-1 md:grid-cols-2 items-center gap-6">
                         <div style={{ height: 240 }}>
-                          <ResponsiveContainer width="100%" height="100%">
-                            <PieChart>
-                              <Pie data={categoryData} cx="50%" cy="50%" innerRadius={60} outerRadius={85} paddingAngle={4} dataKey="value">
-                                {categoryData.map((entry, idx) => <Cell key={idx} fill={entry.color} />)}
-                              </Pie>
-                              <ChartTooltip content={({ active, payload }) => active && payload?.length ? (
-                                <div className="glass-panel p-2.5 rounded-xl text-xs" style={{ border: '1px solid var(--border-default)' }}>
-                                  <p style={{ color: 'var(--text-primary)' }}>{payload[0].name}: <strong>{payload[0].value} kg</strong></p>
-                                </div>
-                              ) : null} />
-                            </PieChart>
-                          </ResponsiveContainer>
+                          <CategoryPieChart data={categoryData} />
                         </div>
                         <div className="space-y-2">
                           {categoryData.map((item, idx) => (
@@ -639,6 +631,7 @@ export default function Dashboard() {
       {/* ── Floating chat button (mobile) ── */}
       <motion.button
         onClick={() => setIsChatOpen(true)}
+        aria-label="Open AI Logger"
         className="fixed bottom-20 right-4 md:hidden w-12 h-12 rounded-full shadow-lg flex items-center justify-center z-50 ripple"
         style={{ background: 'var(--accent-blue)', color: '#fff', boxShadow: '0 4px 20px rgba(56,189,248,0.4)' }}
         whileHover={{ scale: 1.1 }}

@@ -15,7 +15,10 @@ const handler = NextAuth({
         if (!credentials?.email || !credentials?.password) return null;
         
         try {
-          const user = await db.user.findUnique({ where: { email: credentials.email } });
+          const user = await db.user.findUnique({ 
+            where: { email: credentials.email },
+            select: { id: true, name: true, email: true, password: true }
+          });
           if (!user) {
             // User doesn't exist
             return null;

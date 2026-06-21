@@ -36,7 +36,7 @@ model CarbonLog {
   parsedActivities String // array of {category, subcategory, description, quantity, unit, co2eKg}
   totalCo2eKg  Float
   source       String   @default("chat") // "chat" | "manual" | "import"
-
+  @@index([userId])
   @@index([userId, activityDate])
 }
 
@@ -74,6 +74,9 @@ model SwapAction {
   estimatedSavingsKgCO2eWeekly Float
   acceptedAt       DateTime @default(now())
   status           String   @default("active") // active | completed | abandoned
+
+  @@index([userId])
+  @@index([userId, status])
 }
 
 model Achievement {
@@ -92,6 +95,8 @@ model UserAchievement {
   achievementId String
   achievement   Achievement @relation(fields: [achievementId], references: [id])
   unlockedAt    DateTime @default(now())
+
+  @@index([userId])
 }
 
 model LeaderboardEntry {
@@ -100,6 +105,7 @@ model LeaderboardEntry {
   weeklyPoints Int   @default(0)
   rank        Int?
   groupId     String? // for friend-group leaderboards
-
+  @@index([userId])
+  @@index([weeklyPoints])
   @@index([groupId, weeklyPoints])
 }

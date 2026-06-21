@@ -1,0 +1,14 @@
+.git
+node_modules
+.next
+out
+build
+prisma/dev.db
+prisma/dev.db-journal
+.env
+.env.local
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.gcloudignore
+Dockerfile

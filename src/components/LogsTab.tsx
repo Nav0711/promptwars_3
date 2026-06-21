@@ -97,7 +97,7 @@ export default function LogsTab({ logs }: LogsTabProps) {
   };
 
   return (
-    <div className="space-y-5">
+    <section className="space-y-5">
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
@@ -149,6 +149,7 @@ export default function LogsTab({ logs }: LogsTabProps) {
         {/* Sort toggle */}
         <button
           onClick={() => setSortOrder(s => s === 'desc' ? 'asc' : 'desc')}
+          aria-label={sortOrder === 'desc' ? 'Sort oldest first' : 'Sort newest first'}
           className="btn-ghost flex items-center gap-2 shrink-0"
           style={{ padding: '0.625rem 1rem' }}
         >
@@ -164,6 +165,8 @@ export default function LogsTab({ logs }: LogsTabProps) {
           <button
             key={cat}
             onClick={() => { setCategoryFilter(cat); setPage(1); }}
+            aria-pressed={categoryFilter === cat}
+            aria-label={`Filter by ${cat}`}
             className="px-3 py-1 rounded-full text-[11px] font-semibold font-heading transition-all cursor-pointer"
             style={{
               background: categoryFilter === cat ? 'var(--accent-blue)' : 'var(--bg-elevated)',
@@ -199,7 +202,7 @@ export default function LogsTab({ logs }: LogsTabProps) {
               const isExpanded = expandedId === log.id;
               const dateStr = formatDate(log.activityDate);
               return (
-                <motion.div
+                <motion.article
                   key={log.id || idx}
                   initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
@@ -307,7 +310,7 @@ export default function LogsTab({ logs }: LogsTabProps) {
                       </motion.div>
                     )}
                   </AnimatePresence>
-                </motion.div>
+                </motion.article>
               );
             })}
           </AnimatePresence>
@@ -331,6 +334,6 @@ export default function LogsTab({ logs }: LogsTabProps) {
           )}
         </div>
       )}
-    </div>
+    </section>
   );
 }

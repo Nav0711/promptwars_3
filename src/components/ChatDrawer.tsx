@@ -39,6 +39,63 @@ export default function ChatDrawer({ isOpen, onClose }: ChatDrawerProps) {
 
   const chatBodyRef = useRef<HTMLDivElement>(null);
   const recognitionRef = useRef<any>(null);
+  const drawerRef = useRef<HTMLDivElement>(null);
+  const previousFocusRef = useRef<HTMLElement | null>(null);
+
+  // Focus trap and keyboard navigation
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (!isOpen) return;
+
+      if (e.key === 'Escape') {
+        onClose();
+        return;
+      }
+
+      if (e.key === 'Tab') {
+        if (!drawerRef.current) return;
+        const focusableElements = drawerRef.current.querySelectorAll<HTMLElement>(
+          'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])'
+        );
+        const elements = Array.from(focusableElements).filter(el => !el.hasAttribute('disabled'));
+        if (elements.length === 0) return;
+
+        const firstElement = elements[0];
+        const lastElement = elements[elements.length - 1];
+
+        if (e.shiftKey) {
+          if (document.activeElement === firstElement || document.activeElement === drawerRef.current) {
+            e.preventDefault();
+            lastElement.focus();
+          }
+        } else {
+          if (document.activeElement === lastElement) {
+            e.preventDefault();
+            firstElement.focus();
+          }
+        }
+      }
+    };
+
+    if (isOpen) {
+      previousFocusRef.current = document.activeElement as HTMLElement;
+      document.addEventListener('keydown', handleKeyDown);
+      // Automatically focus the input field when the drawer opens
+      setTimeout(() => {
+        const input = drawerRef.current?.querySelector('input[type="text"]') as HTMLElement;
+        input?.focus();
+      }, 100);
+    } else {
+      if (previousFocusRef.current) {
+        previousFocusRef.current.focus();
+      }
+      document.removeEventListener('keydown', handleKeyDown);
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, onClose]);
 
   // Auto-scroll to bottom on new messages
   useEffect(() => {
@@ -303,16 +360,18 @@ export default function ChatDrawer({ isOpen, onClose }: ChatDrawerProps) {
           />
 
           {/* Drawer Sheet */}
-          <motion.div
+          <motion.aside
+            ref={drawerRef}
+            tabIndex={-1}
             initial={{ y: '100%' }}
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 220 }}
-            className="fixed bottom-0 left-0 right-0 max-w-lg mx-auto rounded-t-2xl shadow-2xl z-50 flex flex-col pointer-events-auto"
+            className="fixed bottom-0 left-0 right-0 max-w-lg mx-auto rounded-t-2xl shadow-2xl z-50 flex flex-col pointer-events-auto outline-none"
             style={{ maxHeight: '88vh', background: 'var(--bg-surface)', border: '1px solid var(--border-default)', borderBottom: 'none' }}
           >
             {/* Header */}
-            <div className="flex items-center justify-between px-5 py-4 shrink-0" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
+            <header className="flex items-center justify-between px-5 py-4 shrink-0" style={{ borderBottom: '1px solid var(--border-subtle)' }}>
               <div className="flex items-center gap-2.5">
                 <div className="p-1.5 rounded-lg" style={{ background: 'rgba(56,189,248,0.1)', color: 'var(--accent-blue)' }}>
                   <Bot className="w-4 h-4" />
@@ -324,18 +383,18 @@ export default function ChatDrawer({ isOpen, onClose }: ChatDrawerProps) {
               </div>
               <div className="flex items-center gap-1">
                 {messages.length > 0 && (
-                  <button onClick={handleResetConversation} className="p-1.5 rounded-lg transition-colors cursor-pointer" style={{ color: 'var(--text-muted)' }} title="New conversation">
+                  <button onClick={handleResetConversation} aria-label="Reset conversation" className="p-1.5 rounded-lg transition-colors cursor-pointer" style={{ color: 'var(--text-muted)' }} title="New conversation">
                     <RotateCcw className="w-3.5 h-3.5" />
                   </button>
                 )}
-                <button onClick={onClose} className="p-1.5 rounded-lg transition-colors cursor-pointer" style={{ color: 'var(--text-muted)' }}>
+                <button onClick={onClose} aria-label="Close chat" className="p-1.5 rounded-lg transition-colors cursor-pointer" style={{ color: 'var(--text-muted)' }}>
                   <X className="w-4 h-4" />
                 </button>
               </div>
-            </div>
+            </header>
 
             {/* Chat Body */}
-            <div ref={chatBodyRef} className="flex-1 overflow-y-auto px-5 py-4 space-y-4 min-h-0">
+            <main ref={chatBodyRef} className="flex-1 overflow-y-auto px-5 py-4 space-y-4 min-h-0">
               {/* Bot greeting */}
               <div className="flex gap-2.5 items-start">
                 <div className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold font-mono shrink-0"
@@ -408,11 +467,11 @@ export default function ChatDrawer({ isOpen, onClose }: ChatDrawerProps) {
                               </div>
                               {isEditing ? (
                                 <div className="flex items-center gap-2">
-                                  <input type="number" value={editQty} onChange={e => setEditQty(e.target.value)} className="input w-16 py-1 px-2 text-xs" />
-                                  <select value={editUnit} onChange={e => setEditUnit(e.target.value)} className="input py-1 px-2 text-xs">
+                                  <input type="number" aria-label="Quantity" value={editQty} onChange={e => setEditQty(e.target.value)} className="input w-16 py-1 px-2 text-xs" />
+                                  <select aria-label="Unit" value={editUnit} onChange={e => setEditUnit(e.target.value)} className="input py-1 px-2 text-xs">
                                     {['km','meal','kWh','liters','kg','usd','hours'].map(u => <option key={u} value={u}>{u}</option>)}
                                   </select>
-                                  <button onClick={() => handleSaveEdit(index)} className="p-1.5 rounded-lg cursor-pointer" style={{ background: 'var(--accent-blue)', color: '#fff' }}>
+                                  <button onClick={() => handleSaveEdit(index)} aria-label="Save edit" className="p-1.5 rounded-lg cursor-pointer" style={{ background: 'var(--accent-blue)', color: '#fff' }}>
                                     <Check className="w-3 h-3" />
                                   </button>
                                 </div>
@@ -422,8 +481,8 @@ export default function ChatDrawer({ isOpen, onClose }: ChatDrawerProps) {
                                     {act.description} <strong style={{ color: 'var(--text-secondary)' }}>({act.quantity} {act.unit})</strong>
                                   </span>
                                   <div className="flex items-center gap-1 shrink-0 ml-2">
-                                    <button onClick={() => handleEditActivity(index)} className="p-1 rounded-lg transition-colors cursor-pointer" style={{ color: 'var(--text-muted)' }}><Edit2 className="w-3 h-3" /></button>
-                                    <button onClick={() => handleDeleteActivity(index)} className="p-1 rounded-lg transition-colors cursor-pointer" style={{ color: 'var(--accent-rose)' }}><Trash2 className="w-3 h-3" /></button>
+                                    <button onClick={() => handleEditActivity(index)} aria-label="Edit activity" className="p-1 rounded-lg transition-colors cursor-pointer" style={{ color: 'var(--text-muted)' }}><Edit2 className="w-3 h-3" /></button>
+                                    <button onClick={() => handleDeleteActivity(index)} aria-label="Delete activity" className="p-1 rounded-lg transition-colors cursor-pointer" style={{ color: 'var(--accent-rose)' }}><Trash2 className="w-3 h-3" /></button>
                                   </div>
                                 </div>
                               )}
@@ -463,7 +522,7 @@ export default function ChatDrawer({ isOpen, onClose }: ChatDrawerProps) {
                   </div>
                 </motion.div>
               )}
-            </div>
+            </main>
 
             {/* Input Form */}
             <form onSubmit={handleSubmitText} className="px-5 py-4 shrink-0" style={{ borderTop: '1px solid var(--border-subtle)' }}>
@@ -476,14 +535,14 @@ export default function ChatDrawer({ isOpen, onClose }: ChatDrawerProps) {
                   className="input flex-1 py-3 text-xs"
                   style={{ borderRadius: '0.75rem' }}
                 />
-                <button type="button" onClick={handleMicClick} className="p-3 rounded-xl shrink-0 transition-all cursor-pointer"
+                <button type="button" onClick={handleMicClick} aria-label="Toggle speech recognition" className="p-3 rounded-xl shrink-0 transition-all cursor-pointer"
                   style={isRecording
                     ? { background: 'rgba(244,63,94,0.1)', border: '1px solid var(--accent-rose)', color: 'var(--accent-rose)' }
                     : { background: 'var(--bg-elevated)', border: '1px solid var(--border-default)', color: 'var(--text-muted)' }
                   }>
                   <Mic className="w-4 h-4" />
                 </button>
-                <button type="submit" disabled={!inputText.trim() || loading} className="p-3 rounded-xl shrink-0 transition-all cursor-pointer disabled:opacity-40"
+                <button type="submit" disabled={!inputText.trim() || loading} aria-label="Send message" className="p-3 rounded-xl shrink-0 transition-all cursor-pointer disabled:opacity-40"
                   style={{ background: 'var(--accent-blue)', color: '#fff' }}>
                   <Send className="w-4 h-4" />
                 </button>
@@ -494,7 +553,7 @@ export default function ChatDrawer({ isOpen, onClose }: ChatDrawerProps) {
                 </p>
               )}
             </form>
-          </motion.div>
+          </motion.aside>
         </>
       )}
     </AnimatePresence>

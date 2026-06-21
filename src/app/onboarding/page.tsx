@@ -102,11 +102,11 @@ export default function Onboarding() {
   const progressPercent = Math.min(100, Math.round(((step - 1) / 4) * 100));
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center p-4 relative" style={{ background: 'var(--bg-base)' }}>
+    <main className="min-h-screen flex flex-col items-center justify-center p-4 relative" style={{ background: 'var(--bg-base)' }}>
       {/* Background radial glow */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-full pointer-events-none opacity-30" style={{ background: 'radial-gradient(circle at top, var(--brand-glow-lg) 0%, transparent 70%)' }} />
 
-      <div className="w-full max-w-md glass-panel-heavy rounded-2xl shadow-2xl p-6 md:p-8 relative overflow-hidden" style={{ border: '1px solid var(--border-default)' }}>
+      <section className="w-full max-w-md glass-panel-heavy rounded-2xl shadow-2xl p-6 md:p-8 relative overflow-hidden" style={{ border: '1px solid var(--border-default)' }}>
         
         {/* Onboarding Steps 1-4 Header */}
         {step < 5 && (
@@ -154,6 +154,7 @@ export default function Onboarding() {
                   <button
                     type="button"
                     onClick={() => setHousing('apartment')}
+                    aria-label="Select Apartment"
                     className="p-4 rounded-xl border text-center font-heading text-xs font-bold transition-all cursor-pointer"
                     style={{
                       borderColor: housing === 'apartment' ? 'var(--accent-blue)' : 'var(--border-subtle)',
@@ -167,6 +168,7 @@ export default function Onboarding() {
                   <button
                     type="button"
                     onClick={() => setHousing('house')}
+                    aria-label="Select House"
                     className="p-4 rounded-xl border text-center font-heading text-xs font-bold transition-all cursor-pointer"
                     style={{
                       borderColor: housing === 'house' ? 'var(--accent-blue)' : 'var(--border-subtle)',
@@ -188,6 +190,7 @@ export default function Onboarding() {
                       key={mode}
                       type="button"
                       onClick={() => setHeating(mode)}
+                      aria-label={"Select heating mode: " + (mode === 'none' ? 'No Heat' : mode)}
                       className="py-3 px-1 rounded-xl border text-center text-xs font-heading capitalize transition-all cursor-pointer"
                       style={{
                         borderColor: heating === mode ? 'var(--accent-blue)' : 'var(--border-subtle)',
@@ -203,11 +206,13 @@ export default function Onboarding() {
 
               <div>
                 <div className="flex justify-between items-center mb-1.5">
-                  <label className="text-xs font-semibold font-heading" style={{ color: 'var(--text-secondary)' }}>Household Size</label>
-                  <span className="text-xs font-mono font-bold" style={{ color: 'var(--accent-blue)' }}>{householdSize} {householdSize === 1 ? 'person' : 'people'}</span>
+                  <label id="household-size-label" className="text-xs font-semibold font-heading" style={{ color: 'var(--text-secondary)' }}>Household Size</label>
+                  <span id="household-size-desc" className="text-xs font-mono font-bold" style={{ color: 'var(--accent-blue)' }}>{householdSize} {householdSize === 1 ? 'person' : 'people'}</span>
                 </div>
                 <input
                   type="range"
+                  aria-labelledby="household-size-label"
+                  aria-describedby="household-size-desc"
                   min="1"
                   max="8"
                   value={householdSize}
@@ -257,6 +262,7 @@ export default function Onboarding() {
                       key={mode}
                       type="button"
                       onClick={() => setTransitMode(mode)}
+                      aria-label={"Select transit mode: " + (mode === 'none' ? 'Walk/Cycle' : mode)}
                       className="p-3.5 rounded-xl border text-center font-heading text-xs font-bold capitalize transition-all cursor-pointer"
                       style={{
                         borderColor: transitMode === mode ? 'var(--accent-blue)' : 'var(--border-subtle)',
@@ -274,11 +280,13 @@ export default function Onboarding() {
               {transitMode !== 'none' && (
                 <div>
                   <div className="flex justify-between items-center mb-1.5">
-                    <label className="text-xs font-semibold font-heading" style={{ color: 'var(--text-secondary)' }}>Weekly Commute Distance</label>
-                    <span className="text-xs font-mono font-bold" style={{ color: 'var(--accent-blue)' }}>{transitDistance} km</span>
+                    <label id="transit-distance-label" className="text-xs font-semibold font-heading" style={{ color: 'var(--text-secondary)' }}>Weekly Commute Distance</label>
+                    <span id="transit-distance-desc" className="text-xs font-mono font-bold" style={{ color: 'var(--accent-blue)' }}>{transitDistance} km</span>
                   </div>
                   <input
                     type="range"
+                    aria-labelledby="transit-distance-label"
+                    aria-describedby="transit-distance-desc"
                     min="5"
                     max="500"
                     step="5"
@@ -338,6 +346,7 @@ export default function Onboarding() {
                       key={item}
                       type="button"
                       onClick={() => setDiet(item)}
+                      aria-label={"Select diet: " + item}
                       className="p-3.5 rounded-xl border text-center font-heading text-xs font-bold capitalize transition-all cursor-pointer"
                       style={{
                         borderColor: diet === item ? 'var(--accent-blue)' : 'var(--border-subtle)',
@@ -355,11 +364,13 @@ export default function Onboarding() {
               {diet === 'flexitarian' && (
                 <div>
                   <div className="flex justify-between items-center mb-1.5">
-                    <label className="text-xs font-semibold font-heading" style={{ color: 'var(--text-secondary)' }}>Meat Meals per Week</label>
-                    <span className="text-xs font-mono font-bold" style={{ color: 'var(--accent-blue)' }}>{meatMeals} meals</span>
+                    <label id="meat-meals-label" className="text-xs font-semibold font-heading" style={{ color: 'var(--text-secondary)' }}>Meat Meals per Week</label>
+                    <span id="meat-meals-desc" className="text-xs font-mono font-bold" style={{ color: 'var(--accent-blue)' }}>{meatMeals} meals</span>
                   </div>
                   <input
                     type="range"
+                    aria-labelledby="meat-meals-label"
+                    aria-describedby="meat-meals-desc"
                     min="1"
                     max="20"
                     value={meatMeals}
@@ -412,11 +423,13 @@ export default function Onboarding() {
 
               <div>
                 <div className="flex justify-between items-center mb-1.5">
-                  <label className="text-xs font-semibold font-heading" style={{ color: 'var(--text-secondary)' }}>Electricity Usage</label>
-                  <span className="text-xs font-mono font-bold" style={{ color: 'var(--accent-blue)' }}>{electricity} kWh/mo</span>
+                  <label id="electricity-label" className="text-xs font-semibold font-heading" style={{ color: 'var(--text-secondary)' }}>Electricity Usage</label>
+                  <span id="electricity-desc" className="text-xs font-mono font-bold" style={{ color: 'var(--accent-blue)' }}>{electricity} kWh/mo</span>
                 </div>
                 <input
                   type="range"
+                  aria-labelledby="electricity-label"
+                  aria-describedby="electricity-desc"
                   min="50"
                   max="1000"
                   step="25"
@@ -430,11 +443,13 @@ export default function Onboarding() {
 
               <div>
                 <div className="flex justify-between items-center mb-1.5">
-                  <label className="text-xs font-semibold font-heading" style={{ color: 'var(--text-secondary)' }}>Water Consumption</label>
-                  <span className="text-xs font-mono font-bold" style={{ color: 'var(--accent-blue)' }}>{water.toLocaleString()} Liters/mo</span>
+                  <label id="water-label" className="text-xs font-semibold font-heading" style={{ color: 'var(--text-secondary)' }}>Water Consumption</label>
+                  <span id="water-desc" className="text-xs font-mono font-bold" style={{ color: 'var(--accent-blue)' }}>{water.toLocaleString()} Liters/mo</span>
                 </div>
                 <input
                   type="range"
+                  aria-labelledby="water-label"
+                  aria-describedby="water-desc"
                   min="500"
                   max="20000"
                   step="500"
@@ -518,6 +533,7 @@ export default function Onboarding() {
                     <label className="text-[10px] font-mono block mb-1" style={{ color: 'var(--text-muted)' }}>Your Name</label>
                     <input
                       type="text"
+                      aria-label="Your Name"
                       required
                       placeholder="e.g. Navdeep"
                       value={name}
@@ -530,6 +546,7 @@ export default function Onboarding() {
                     <label className="text-[10px] font-mono block mb-1" style={{ color: 'var(--text-muted)' }}>Your Email</label>
                     <input
                       type="email"
+                      aria-label="Your Email"
                       required
                       placeholder="e.g. navdeep@ecoloop.org"
                       value={email}
@@ -560,7 +577,7 @@ export default function Onboarding() {
             </motion.form>
           )}
         </AnimatePresence>
-      </div>
-    </div>
+      </section>
+    </main>
   );
 }
