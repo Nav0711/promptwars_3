@@ -2,7 +2,32 @@
 .gitignore
 node_modules/
 .next/
+out/
+build/
 !.env
 .env.local
+.env.*.local
+*.log
+
+# Database
 prisma/dev.db
 prisma/dev.db-journal
+
+# Testing & CI
+coverage/
+e2e/
+playwright-report/
+test-results/
+.nyc_output/
+vitest.config.ts
+playwright.config.ts
+
+# Documentation & Repo metadata
+README.md
+EcoLoop_PRD.md
+.github/
+.vscode/
+
+# Ignore cloud configs
+Dockerfile
+.dockerignore

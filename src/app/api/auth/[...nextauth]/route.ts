@@ -3,7 +3,7 @@ import CredentialsProvider from 'next-auth/providers/credentials';
 import { db } from '@/lib/db';
 import bcrypt from 'bcryptjs';
 
-const handler = NextAuth({
+export const authOptions: any = {
   providers: [
     CredentialsProvider({
       name: 'Credentials',
@@ -68,6 +68,8 @@ const handler = NextAuth({
     signIn: '/onboarding'
   },
   secret: process.env.NEXTAUTH_SECRET || 'super-secret-key-for-ecoloop-auth-dev'
-});
+};
+
+const handler = NextAuth(authOptions);
 
 export { handler as GET, handler as POST };

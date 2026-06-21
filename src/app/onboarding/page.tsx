@@ -148,13 +148,15 @@ export default function Onboarding() {
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <label className="text-xs font-semibold font-heading block" style={{ color: 'var(--text-secondary)' }}>Home Type</label>
+              {/* Fix 8: label wrapping button groups must use group+labelledby pattern */}
+              <div className="space-y-2" role="group" aria-labelledby="housing-type-label">
+                <p id="housing-type-label" className="text-xs font-semibold font-heading block" style={{ color: 'var(--text-secondary)' }}>Home Type</p>
                 <div className="grid grid-cols-2 gap-3">
                   <button
                     type="button"
                     onClick={() => setHousing('apartment')}
                     aria-label="Select Apartment"
+                    aria-pressed={housing === 'apartment'}
                     className="p-4 rounded-xl border text-center font-heading text-xs font-bold transition-all cursor-pointer"
                     style={{
                       borderColor: housing === 'apartment' ? 'var(--accent-blue)' : 'var(--border-subtle)',
@@ -169,6 +171,7 @@ export default function Onboarding() {
                     type="button"
                     onClick={() => setHousing('house')}
                     aria-label="Select House"
+                    aria-pressed={housing === 'house'}
                     className="p-4 rounded-xl border text-center font-heading text-xs font-bold transition-all cursor-pointer"
                     style={{
                       borderColor: housing === 'house' ? 'var(--accent-blue)' : 'var(--border-subtle)',
@@ -182,8 +185,8 @@ export default function Onboarding() {
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <label className="text-xs font-semibold font-heading block" style={{ color: 'var(--text-secondary)' }}>Heating Source</label>
+              <div className="space-y-2" role="group" aria-labelledby="heating-source-label">
+                <p id="heating-source-label" className="text-xs font-semibold font-heading block" style={{ color: 'var(--text-secondary)' }}>Heating Source</p>
                 <div className="grid grid-cols-3 gap-2">
                   {(['electric', 'gas', 'none'] as const).map((mode) => (
                     <button
@@ -191,6 +194,7 @@ export default function Onboarding() {
                       type="button"
                       onClick={() => setHeating(mode)}
                       aria-label={"Select heating mode: " + (mode === 'none' ? 'No Heat' : mode)}
+                      aria-pressed={heating === mode}
                       className="py-3 px-1 rounded-xl border text-center text-xs font-heading capitalize transition-all cursor-pointer"
                       style={{
                         borderColor: heating === mode ? 'var(--accent-blue)' : 'var(--border-subtle)',
@@ -206,7 +210,8 @@ export default function Onboarding() {
 
               <div>
                 <div className="flex justify-between items-center mb-1.5">
-                  <label id="household-size-label" className="text-xs font-semibold font-heading" style={{ color: 'var(--text-secondary)' }}>Household Size</label>
+                  {/* Fix 8: Use <p id=...> not <label id=...> for aria-labelledby targets */}
+                  <p id="household-size-label" className="text-xs font-semibold font-heading" style={{ color: 'var(--text-secondary)' }}>Household Size</p>
                   <span id="household-size-desc" className="text-xs font-mono font-bold" style={{ color: 'var(--accent-blue)' }}>{householdSize} {householdSize === 1 ? 'person' : 'people'}</span>
                 </div>
                 <input
@@ -254,8 +259,8 @@ export default function Onboarding() {
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <label className="text-xs font-semibold font-heading block" style={{ color: 'var(--text-secondary)' }}>Primary Commute Mode</label>
+              <div className="space-y-2" role="group" aria-labelledby="transit-mode-label">
+                <p id="transit-mode-label" className="text-xs font-semibold font-heading block" style={{ color: 'var(--text-secondary)' }}>Primary Commute Mode</p>
                 <div className="grid grid-cols-2 gap-2">
                   {(['car', 'bus', 'metro', 'none'] as const).map((mode) => (
                     <button
@@ -263,6 +268,7 @@ export default function Onboarding() {
                       type="button"
                       onClick={() => setTransitMode(mode)}
                       aria-label={"Select transit mode: " + (mode === 'none' ? 'Walk/Cycle' : mode)}
+                      aria-pressed={transitMode === mode}
                       className="p-3.5 rounded-xl border text-center font-heading text-xs font-bold capitalize transition-all cursor-pointer"
                       style={{
                         borderColor: transitMode === mode ? 'var(--accent-blue)' : 'var(--border-subtle)',
@@ -280,7 +286,8 @@ export default function Onboarding() {
               {transitMode !== 'none' && (
                 <div>
                   <div className="flex justify-between items-center mb-1.5">
-                    <label id="transit-distance-label" className="text-xs font-semibold font-heading" style={{ color: 'var(--text-secondary)' }}>Weekly Commute Distance</label>
+                    {/* Fix 8: Use <p id=...> not <label id=...> when association is via aria-labelledby */}
+                  <p id="transit-distance-label" className="text-xs font-semibold font-heading" style={{ color: 'var(--text-secondary)' }}>Weekly Commute Distance</p>
                     <span id="transit-distance-desc" className="text-xs font-mono font-bold" style={{ color: 'var(--accent-blue)' }}>{transitDistance} km</span>
                   </div>
                   <input
@@ -338,8 +345,8 @@ export default function Onboarding() {
                 </div>
               </div>
 
-              <div className="space-y-2">
-                <label className="text-xs font-semibold font-heading block" style={{ color: 'var(--text-secondary)' }}>Diet Type</label>
+              <div className="space-y-2" role="group" aria-labelledby="diet-type-label">
+                <p id="diet-type-label" className="text-xs font-semibold font-heading block" style={{ color: 'var(--text-secondary)' }}>Diet Type</p>
                 <div className="grid grid-cols-2 gap-2">
                   {(['omnivore', 'flexitarian', 'vegetarian', 'vegan'] as const).map((item) => (
                     <button
@@ -347,6 +354,7 @@ export default function Onboarding() {
                       type="button"
                       onClick={() => setDiet(item)}
                       aria-label={"Select diet: " + item}
+                      aria-pressed={diet === item}
                       className="p-3.5 rounded-xl border text-center font-heading text-xs font-bold capitalize transition-all cursor-pointer"
                       style={{
                         borderColor: diet === item ? 'var(--accent-blue)' : 'var(--border-subtle)',
@@ -364,7 +372,8 @@ export default function Onboarding() {
               {diet === 'flexitarian' && (
                 <div>
                   <div className="flex justify-between items-center mb-1.5">
-                    <label id="meat-meals-label" className="text-xs font-semibold font-heading" style={{ color: 'var(--text-secondary)' }}>Meat Meals per Week</label>
+                    {/* Fix 8: Use <p id=...> not <label id=...> when association is via aria-labelledby */}
+                  <p id="meat-meals-label" className="text-xs font-semibold font-heading" style={{ color: 'var(--text-secondary)' }}>Meat Meals per Week</p>
                     <span id="meat-meals-desc" className="text-xs font-mono font-bold" style={{ color: 'var(--accent-blue)' }}>{meatMeals} meals</span>
                   </div>
                   <input
@@ -423,7 +432,8 @@ export default function Onboarding() {
 
               <div>
                 <div className="flex justify-between items-center mb-1.5">
-                  <label id="electricity-label" className="text-xs font-semibold font-heading" style={{ color: 'var(--text-secondary)' }}>Electricity Usage</label>
+                  {/* Fix 8: Use <p id=...> not <label id=...> when association is via aria-labelledby */}
+                  <p id="electricity-label" className="text-xs font-semibold font-heading" style={{ color: 'var(--text-secondary)' }}>Electricity Usage</p>
                   <span id="electricity-desc" className="text-xs font-mono font-bold" style={{ color: 'var(--accent-blue)' }}>{electricity} kWh/mo</span>
                 </div>
                 <input
@@ -443,7 +453,8 @@ export default function Onboarding() {
 
               <div>
                 <div className="flex justify-between items-center mb-1.5">
-                  <label id="water-label" className="text-xs font-semibold font-heading" style={{ color: 'var(--text-secondary)' }}>Water Consumption</label>
+                  {/* Fix 8: Use <p id=...> not <label id=...> when association is via aria-labelledby */}
+                  <p id="water-label" className="text-xs font-semibold font-heading" style={{ color: 'var(--text-secondary)' }}>Water Consumption</p>
                   <span id="water-desc" className="text-xs font-mono font-bold" style={{ color: 'var(--accent-blue)' }}>{water.toLocaleString()} Liters/mo</span>
                 </div>
                 <input
@@ -530,27 +541,31 @@ export default function Onboarding() {
                 
                 <div className="space-y-3">
                   <div>
-                    <label className="text-[10px] font-mono block mb-1" style={{ color: 'var(--text-muted)' }}>Your Name</label>
+                    {/* Fix 1/8: Associate label with input via htmlFor/id */}
+                    <label htmlFor="onboard-name" className="text-[10px] font-mono block mb-1" style={{ color: 'var(--text-muted)' }}>Your Name</label>
                     <input
+                      id="onboard-name"
                       type="text"
-                      aria-label="Your Name"
                       required
                       placeholder="e.g. Navdeep"
                       value={name}
                       onChange={(e) => setName(e.target.value)}
+                      autoComplete="name"
                       className="input"
                     />
                   </div>
                   
                   <div>
-                    <label className="text-[10px] font-mono block mb-1" style={{ color: 'var(--text-muted)' }}>Your Email</label>
+                    {/* Fix 1/8: Associate label with input via htmlFor/id */}
+                    <label htmlFor="onboard-email" className="text-[10px] font-mono block mb-1" style={{ color: 'var(--text-muted)' }}>Your Email</label>
                     <input
+                      id="onboard-email"
                       type="email"
-                      aria-label="Your Email"
                       required
                       placeholder="e.g. navdeep@ecoloop.org"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
+                      autoComplete="email"
                       className="input"
                     />
                   </div>

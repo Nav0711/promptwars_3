@@ -41,6 +41,8 @@ function LoginForm() {
     }
   };
 
+  const isSuccess = searchParams.get('registered') === 'true';
+
   return (
     <div className="min-h-screen flex flex-col items-center justify-center p-4 relative" style={{ background: 'var(--bg-base)' }}>
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-7xl h-full pointer-events-none opacity-30" style={{ background: 'radial-gradient(circle at top, var(--brand-glow-lg) 0%, transparent 70%)' }} />
@@ -55,36 +57,60 @@ function LoginForm() {
           <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Enter your details to enter the loop.</p>
         </div>
 
-        {errorMsg && (
-          <div className="mb-4 p-3 rounded-xl text-sm" style={{ background: searchParams.get('registered') ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)', color: searchParams.get('registered') ? '#22c55e' : '#ef4444', border: searchParams.get('registered') ? '1px solid rgba(34, 197, 94, 0.2)' : '1px solid rgba(239, 68, 68, 0.2)' }}>
-            {errorMsg}
-          </div>
-        )}
+        {/* Fix 6: aria-live region for login status messages */}
+        <div aria-live="polite" aria-atomic="true">
+          {errorMsg && (
+            <div
+              role="alert"
+              className="mb-4 p-3 rounded-xl text-sm"
+              style={{
+                background: isSuccess ? 'rgba(34, 197, 94, 0.1)' : 'rgba(239, 68, 68, 0.1)',
+                color: isSuccess ? '#22c55e' : '#ef4444',
+                border: isSuccess ? '1px solid rgba(34, 197, 94, 0.2)' : '1px solid rgba(239, 68, 68, 0.2)'
+              }}
+            >
+              {errorMsg}
+            </div>
+          )}
+        </div>
 
         <form onSubmit={handleLogin} className="space-y-4">
+          {/* Fix 1: Associate label with input via htmlFor/id */}
           <div className="space-y-1">
-            <label className="text-xs font-semibold font-heading" style={{ color: 'var(--text-secondary)' }}>Email Address</label>
+            <label htmlFor="login-email" className="text-xs font-semibold font-heading" style={{ color: 'var(--text-secondary)' }}>
+              Email Address
+            </label>
             <input
+              id="login-email"
               type="email"
               required
               placeholder="e.g. navdeep@ecoloop.org"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl text-sm transition-all outline-none"
-              style={{ background: 'var(--bg-base)', border: '1px solid var(--border-subtle)', color: 'var(--text-primary)' }}
+              autoComplete="email"
+              className="w-full px-4 py-3 rounded-xl text-sm transition-all"
+              style={{ background: 'var(--bg-base)', border: '1px solid var(--border-subtle)', color: 'var(--text-primary)', outline: 'none', boxShadow: 'none' }}
+              onFocus={e => { e.currentTarget.style.borderColor = 'var(--accent-blue)'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(56,189,248,0.12)'; }}
+              onBlur={e => { e.currentTarget.style.borderColor = 'var(--border-subtle)'; e.currentTarget.style.boxShadow = 'none'; }}
             />
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-semibold font-heading" style={{ color: 'var(--text-secondary)' }}>Password</label>
+            <label htmlFor="login-password" className="text-xs font-semibold font-heading" style={{ color: 'var(--text-secondary)' }}>
+              Password
+            </label>
             <input
+              id="login-password"
               type="password"
               required
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl text-sm transition-all outline-none"
-              style={{ background: 'var(--bg-base)', border: '1px solid var(--border-subtle)', color: 'var(--text-primary)' }}
+              autoComplete="current-password"
+              className="w-full px-4 py-3 rounded-xl text-sm transition-all"
+              style={{ background: 'var(--bg-base)', border: '1px solid var(--border-subtle)', color: 'var(--text-primary)', outline: 'none', boxShadow: 'none' }}
+              onFocus={e => { e.currentTarget.style.borderColor = 'var(--accent-blue)'; e.currentTarget.style.boxShadow = '0 0 0 3px rgba(56,189,248,0.12)'; }}
+              onBlur={e => { e.currentTarget.style.borderColor = 'var(--border-subtle)'; e.currentTarget.style.boxShadow = 'none'; }}
             />
           </div>
 
@@ -97,7 +123,7 @@ function LoginForm() {
             >
               {loading ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin" /> Authenticating...
+                  <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" /> Authenticating...
                 </>
               ) : (
                 'Log In'
@@ -107,7 +133,7 @@ function LoginForm() {
         </form>
 
         <div className="mt-6 text-center text-sm" style={{ color: 'var(--text-muted)' }}>
-          Don't have an account?{' '}
+          Don&apos;t have an account?{' '}
           <Link href="/register" className="font-bold hover:underline" style={{ color: 'var(--accent-blue)' }}>
             Sign up
           </Link>

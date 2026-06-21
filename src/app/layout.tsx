@@ -37,6 +37,17 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${poppins.variable} ${inter.variable} h-full antialiased dark`} suppressHydrationWarning>
       <body className="min-h-full font-body flex flex-col" style={{ background: 'var(--bg-base)', color: 'var(--text-primary)' }}>
+        {/*
+          Fix 5: Skip-to-content link (WCAG 2.4.1 — Bypass Blocks)
+          Visually hidden until focused by keyboard. Allows screen reader and
+          keyboard users to jump past repeated navigation to the main content.
+        */}
+        <a
+          href="#main-content"
+          className="skip-to-content"
+        >
+          Skip to main content
+        </a>
         <ThemeProvider>
           <AppProvider>
             {children}

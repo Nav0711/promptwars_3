@@ -62,7 +62,7 @@ export async function POST(req: NextRequest) {
 
     const user = await db.user.findUnique({ 
       where: { id: userId },
-      select: { baselineProfile: true }
+      select: { id: true, baselineProfile: true }
     });
     if (!user) {
       return NextResponse.json({ error: 'User not found' }, { status: 404 });
@@ -103,13 +103,16 @@ export async function POST(req: NextRequest) {
     });
 
     // Fetch recent abandoned swaps for deduplication (last 30 days)
-    const allSwaps = await db.swapAction.findMany({ where: { userId } });
     const cutoffDate = new Date();
     cutoffDate.setDate(cutoffDate.getDate() - DEDUP_WINDOW_DAYS);
 
-    const recentAbandonedSwaps = allSwaps.filter((s: any) => {
-      const abandonedAt = s.abandonedAt ? new Date(s.abandonedAt) : null;
-      return s.status === 'abandoned' && abandonedAt && abandonedAt >= cutoffDate;
+    const recentAbandonedSwaps = await db.swapAction.findMany({
+      where: {
+        userId: user.id,
+        status: 'abandoned',
+        createdAt: { gte: cutoffDate }
+      },
+      select: { targetCategory: true, embeddingVector: true }
     });
 
     // Helper: check if a candidate swap is too similar to any recent abandoned swap
@@ -124,8 +127,8 @@ export async function POST(req: NextRequest) {
         let storedVector: number[];
         try {
           storedVector = typeof abandoned.embeddingVector === 'string'
-            ? JSON.parse(abandoned.embeddingVector)
-            : abandoned.embeddingVector;
+            ? JSON.parse(abandoned.embeddingVector as string)
+            : abandoned.embeddingVector as number[];
         } catch { continue; }
 
         const similarity = cosineSimilarity(candidateEmbed, storedVector);

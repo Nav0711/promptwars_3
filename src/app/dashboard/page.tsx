@@ -148,7 +148,9 @@ export default function Dashboard() {
       <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} onOpenChat={() => setIsChatOpen(true)} />
 
       {/* ── Main content ── */}
-      <main className="flex-1 flex flex-col gap-5 min-w-0 pb-20 md:pb-0">
+      <main id="main-content" className="flex-1 flex flex-col gap-5 min-w-0 pb-20 md:pb-0">
+        {/* Fix 4: Visually-hidden h1 for screen reader navigation */}
+        <h1 className="sr-only">EcoLoop Dashboard</h1>
 
         {/* Top bar (mobile: logo + controls; desktop: greeting bar) */}
         <header className="glass-panel rounded-2xl px-4 py-3 flex items-center justify-between gap-3">
@@ -182,10 +184,15 @@ export default function Dashboard() {
               <Award className="w-3.5 h-3.5" />
               {user?.ecoPoints || 0} pts
             </div>
-            {/* Mobile theme toggle */}
-            <button onClick={toggleTheme} className="p-2 rounded-xl md:hidden ripple transition-all" style={{ border: '1px solid var(--border-subtle)', color: 'var(--text-muted)' }}>
+            {/* Mobile theme toggle — Fix 2: aria-label */}
+            <button
+              onClick={toggleTheme}
+              aria-label={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+              className="p-2 rounded-xl md:hidden ripple transition-all"
+              style={{ border: '1px solid var(--border-subtle)', color: 'var(--text-muted)' }}
+            >
               <motion.div animate={{ rotate: isDark ? 0 : 180 }} transition={{ type: 'spring' }}>
-                {isDark ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
+                {isDark ? <Moon className="w-4 h-4" aria-hidden="true" /> : <Sun className="w-4 h-4" aria-hidden="true" />}
               </motion.div>
             </button>
             {/* Developer Reset Button */}
@@ -198,9 +205,14 @@ export default function Dashboard() {
               <RotateCcw className="w-3 h-3" />
               <span>Reset</span>
             </button>
-            {/* Mobile Log CTA */}
-            <button onClick={() => setIsChatOpen(true)} className="flex md:hidden items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-heading font-bold ripple" style={{ background: 'var(--accent-blue)', color: '#fff' }}>
-              <Zap className="w-3.5 h-3.5" /> Log
+            {/* Mobile Log CTA — Fix 2: descriptive aria-label */}
+            <button
+              onClick={() => setIsChatOpen(true)}
+              aria-label="Open EcoBot Logger to log an activity"
+              className="flex md:hidden items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-heading font-bold ripple"
+              style={{ background: 'var(--accent-blue)', color: '#fff' }}
+            >
+              <Zap className="w-3.5 h-3.5" aria-hidden="true" /> Log
             </button>
           </div>
         </header>
@@ -551,8 +563,14 @@ export default function Dashboard() {
                             <div className="flex items-center gap-2 p-2.5 rounded-xl" style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-default)' }}>
                               <span className="text-xs flex-1" style={{ color: 'var(--text-muted)' }}>Group Code:</span>
                               <span className="font-mono font-bold tracking-widest text-sm" style={{ color: 'var(--accent-blue)' }}>{userGroupId}</span>
-                              <button onClick={() => { navigator.clipboard.writeText(userGroupId); setCopiedCode(true); setTimeout(() => setCopiedCode(false), 2000); }} className="p-1 rounded-lg transition-colors cursor-pointer" style={{ color: 'var(--text-muted)' }}>
-                                {copiedCode ? <CheckCheck className="w-3.5 h-3.5" style={{ color: 'var(--accent-green)' }} /> : <Copy className="w-3.5 h-3.5" />}
+                              {/* Fix 2: aria-label on copy button; Fix 6: aria-live for copy confirmation */}
+                              <button
+                                onClick={() => { navigator.clipboard.writeText(userGroupId); setCopiedCode(true); setTimeout(() => setCopiedCode(false), 2000); }}
+                                aria-label={copiedCode ? 'Group code copied!' : 'Copy group invite code'}
+                                className="p-1 rounded-lg transition-colors cursor-pointer"
+                                style={{ color: 'var(--text-muted)' }}
+                              >
+                                {copiedCode ? <CheckCheck className="w-3.5 h-3.5" aria-hidden="true" style={{ color: 'var(--accent-green)' }} /> : <Copy className="w-3.5 h-3.5" aria-hidden="true" />}
                               </button>
                             </div>
                             {groupLeaderboard.length === 0 ? (
@@ -610,18 +628,24 @@ export default function Dashboard() {
       </main>
 
       {/* ── Mobile bottom nav ── */}
-      <nav className="fixed bottom-0 inset-x-0 md:hidden z-40 glass-panel-heavy" style={{ borderRadius: '16px 16px 0 0', padding: '8px 8px 4px' }}>
+      <nav aria-label="Main navigation" className="fixed bottom-0 inset-x-0 md:hidden z-40 glass-panel-heavy" style={{ borderRadius: '16px 16px 0 0', padding: '8px 8px 4px' }}>
         <div className="flex items-center justify-around">
           {MOBILE_TABS.map(tab => {
             const Icon = tab.icon;
             const isActive = activeTab === tab.id;
+            // Fix 2: aria-label + aria-current on mobile tab buttons
             return (
-              <button key={tab.id} onClick={() => setActiveTab(tab.id as Tab)}
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id as Tab)}
+                aria-label={tab.label}
+                aria-current={isActive ? 'page' : undefined}
                 className="flex flex-col items-center gap-0.5 py-1.5 px-3 rounded-xl transition-all cursor-pointer relative"
-                style={{ color: isActive ? 'var(--accent-blue)' : 'var(--text-muted)', background: isActive ? 'var(--brand-glow)' : 'transparent' }}>
+                style={{ color: isActive ? 'var(--accent-blue)' : 'var(--text-muted)', background: isActive ? 'var(--brand-glow)' : 'transparent' }}
+              >
                 {isActive && <motion.div layoutId="mobile-tab-bg" className="absolute inset-0 rounded-xl" style={{ background: 'var(--brand-glow)' }} />}
-                <Icon className="w-5 h-5 relative z-10" />
-                <span className="text-[9px] font-heading font-semibold relative z-10">{tab.label}</span>
+                <Icon className="w-5 h-5 relative z-10" aria-hidden="true" />
+                <span className="text-[9px] font-heading font-semibold relative z-10" aria-hidden="true">{tab.label}</span>
               </button>
             );
           })}

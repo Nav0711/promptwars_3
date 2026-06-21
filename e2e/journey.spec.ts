@@ -90,7 +90,31 @@ test('Primary User Journey: Register, Login, Onboarding, Chat Log', async ({ pag
   // Wait for the drawer to automatically close (after 2s timeout in ChatDrawer)
   await expect(page.getByText('EcoBot Logger')).not.toBeVisible({ timeout: 5000 });
 
-  // -- ECOSYSTEM CANVAS VISUAL STATE --
   // The EcosystemCanvas svg should be present on the dashboard
   await expect(page.locator('svg').filter({ has: page.locator('linearGradient#skyGrad') })).toBeVisible();
+});
+
+test('Edge Case: Duplicate Registration', async ({ page }) => {
+  // First register a user
+  const dupEmail = `dup_${Date.now()}@ecoloop.org`;
+  
+  await page.goto('/register');
+  await page.getByPlaceholder('e.g. Navdeep', { exact: true }).fill('First User');
+  await page.getByPlaceholder('e.g. navdeep@ecoloop.org').fill(dupEmail);
+  await page.getByPlaceholder('••••••••').fill('Password123!');
+  await page.getByRole('button', { name: 'Sign Up', exact: true }).click();
+  
+  await expect(page).toHaveURL(/\/onboarding/);
+  
+  // Clear site data (sign out)
+  await page.context().clearCookies();
+  
+  // Try to register again with same email
+  await page.goto('/register');
+  await page.getByPlaceholder('e.g. Navdeep', { exact: true }).fill('Second User');
+  await page.getByPlaceholder('e.g. navdeep@ecoloop.org').fill(dupEmail);
+  await page.getByPlaceholder('••••••••').fill('Password123!');
+  await page.getByRole('button', { name: 'Sign Up', exact: true }).click();
+  
+  await expect(page.getByText(/User with this email already exists/i)).toBeVisible();
 });

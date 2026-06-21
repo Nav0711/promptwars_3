@@ -100,9 +100,16 @@ export default function SwapCheckIn({ swap, userId, onComplete }: SwapCheckInPro
           )}
         </motion.section>
       ) : (
-        <motion.section key="resolved" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }}
-          className="glass-panel rounded-2xl p-5 flex items-center justify-center gap-3">
-          <Trophy className="w-5 h-5" style={{ color: 'var(--accent-amber)' }} />
+        <motion.section
+          key="resolved"
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
+          role="status"
+          aria-live="assertive"
+          aria-atomic="true"
+          className="glass-panel rounded-2xl p-5 flex items-center justify-center gap-3"
+        >
+          <Trophy className="w-5 h-5" aria-hidden="true" style={{ color: 'var(--accent-amber)' }} />
           <span className="text-sm font-heading font-semibold" style={{ color: 'var(--text-primary)' }}>
             Logged! New challenge coming soon.
           </span>

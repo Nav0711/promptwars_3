@@ -360,6 +360,7 @@ export default function ChatDrawer({ isOpen, onClose }: ChatDrawerProps) {
           />
 
           {/* Drawer Sheet */}
+          {/* Fix 3: outline-none removed — handled by [tabindex=-1]:focus CSS rule */}
           <motion.aside
             ref={drawerRef}
             tabIndex={-1}
@@ -367,7 +368,7 @@ export default function ChatDrawer({ isOpen, onClose }: ChatDrawerProps) {
             animate={{ y: 0 }}
             exit={{ y: '100%' }}
             transition={{ type: 'spring', damping: 25, stiffness: 220 }}
-            className="fixed bottom-0 left-0 right-0 max-w-lg mx-auto rounded-t-2xl shadow-2xl z-50 flex flex-col pointer-events-auto outline-none"
+            className="fixed bottom-0 left-0 right-0 max-w-lg mx-auto rounded-t-2xl shadow-2xl z-50 flex flex-col pointer-events-auto"
             style={{ maxHeight: '88vh', background: 'var(--bg-surface)', border: '1px solid var(--border-default)', borderBottom: 'none' }}
           >
             {/* Header */}
@@ -393,8 +394,8 @@ export default function ChatDrawer({ isOpen, onClose }: ChatDrawerProps) {
               </div>
             </header>
 
-            {/* Chat Body */}
-            <main ref={chatBodyRef} className="flex-1 overflow-y-auto px-5 py-4 space-y-4 min-h-0">
+            {/* Chat Body — Fix 6: aria-live polite so screen readers announce new bot messages */}
+            <main ref={chatBodyRef} aria-live="polite" aria-label="Conversation" className="flex-1 overflow-y-auto px-5 py-4 space-y-4 min-h-0">
               {/* Bot greeting */}
               <div className="flex gap-2.5 items-start">
                 <div className="w-7 h-7 rounded-full flex items-center justify-center text-[10px] font-bold font-mono shrink-0"
@@ -527,7 +528,9 @@ export default function ChatDrawer({ isOpen, onClose }: ChatDrawerProps) {
             {/* Input Form */}
             <form onSubmit={handleSubmitText} className="px-5 py-4 shrink-0" style={{ borderTop: '1px solid var(--border-subtle)' }}>
               <div className="flex items-center gap-2">
+              <label htmlFor="chat-input" className="sr-only">Tell me about your day</label>
                 <input
+                  id="chat-input"
                   type="text"
                   placeholder={isRecording ? 'Listening...' : 'Tell me about your day...'}
                   value={inputText}
@@ -535,16 +538,16 @@ export default function ChatDrawer({ isOpen, onClose }: ChatDrawerProps) {
                   className="input flex-1 py-3 text-xs"
                   style={{ borderRadius: '0.75rem' }}
                 />
-                <button type="button" onClick={handleMicClick} aria-label="Toggle speech recognition" className="p-3 rounded-xl shrink-0 transition-all cursor-pointer"
+                <button type="button" onClick={handleMicClick} aria-label={isRecording ? 'Stop speech recognition' : 'Start speech recognition'} className="p-3 rounded-xl shrink-0 transition-all cursor-pointer"
                   style={isRecording
                     ? { background: 'rgba(244,63,94,0.1)', border: '1px solid var(--accent-rose)', color: 'var(--accent-rose)' }
                     : { background: 'var(--bg-elevated)', border: '1px solid var(--border-default)', color: 'var(--text-muted)' }
                   }>
-                  <Mic className="w-4 h-4" />
+                  <Mic className="w-4 h-4" aria-hidden="true" />
                 </button>
                 <button type="submit" disabled={!inputText.trim() || loading} aria-label="Send message" className="p-3 rounded-xl shrink-0 transition-all cursor-pointer disabled:opacity-40"
                   style={{ background: 'var(--accent-blue)', color: '#fff' }}>
-                  <Send className="w-4 h-4" />
+                  <Send className="w-4 h-4" aria-hidden="true" />
                 </button>
               </div>
               {chatHistory.length > 1 && (

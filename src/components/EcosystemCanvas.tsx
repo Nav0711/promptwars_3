@@ -319,6 +319,33 @@ export default React.memo(function EcosystemCanvas({
       {/* CRT vignette */}
       <div className="absolute inset-0 pointer-events-none z-20 rounded-2xl" style={{ boxShadow: 'inset 0 0 60px rgba(0,0,0,0.7)' }} aria-hidden="true" />
 
+      {/*
+        Fix 6: aria-live polite region — announces health score tier changes
+        to screen readers without interrupting current speech.
+        Visually hidden via position:absolute / overflow:hidden technique.
+      */}
+      <div
+        aria-live="polite"
+        aria-atomic="true"
+        style={{
+          position: 'absolute',
+          width: '1px', height: '1px',
+          padding: 0, margin: '-1px',
+          overflow: 'hidden',
+          clip: 'rect(0,0,0,0)',
+          whiteSpace: 'nowrap',
+          border: 0,
+          zIndex: 0
+        }}
+      >
+        {tier === 5 ? `Ecosystem is thriving (Health: ${healthScore}/100). Lush, green with fireflies.` :
+         tier === 4 ? `Ecosystem is healthy (Health: ${healthScore}/100). Clear skies with wildlife.` :
+         tier === 3 ? `Ecosystem is recovering (Health: ${healthScore}/100). Partly cloudy.` :
+         tier === 2 ? `Ecosystem is stressed (Health: ${healthScore}/100). Polluted with smog.` :
+         `Ecosystem is critical (Health: ${healthScore}/100). Stormy with dead trees.`}
+      </div>
+
+
       {/* ── MAIN SVG SCENE ────────────────────────────────────────────── */}
       <svg
         viewBox="0 0 160 120"

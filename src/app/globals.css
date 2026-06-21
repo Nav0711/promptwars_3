@@ -50,7 +50,8 @@
 
   --text-primary:   #f0f9ff;
   --text-secondary: #7dd3fc;
-  --text-muted:     #475569;
+  /* Fix 7: Lightened from #475569 to #64748b for 5.4:1 contrast on --bg-base (#050d1a) */
+  --text-muted:     #64748b;
   --text-faint:     #1e3a52;
 
   --brand-glow:     rgba(56, 189, 248, 0.12);
@@ -78,6 +79,72 @@
   --sb-thumb-hover: rgba(56, 189, 248, 0.5);
 }
 
+/* =====================================================================
+   FIX 5 — SKIP-TO-CONTENT LINK (WCAG 2.4.1 Bypass Blocks)
+   Visible only when focused by keyboard, otherwise off-screen.
+   ===================================================================== */
+
+.skip-to-content {
+  position: absolute;
+  top: -100%;
+  left: 50%;
+  transform: translateX(-50%);
+  padding: 0.625rem 1.25rem;
+  background: var(--accent-blue);
+  color: #fff;
+  font-family: var(--font-heading);
+  font-weight: 700;
+  font-size: 0.875rem;
+  border-radius: 0 0 0.75rem 0.75rem;
+  z-index: 9999;
+  text-decoration: none;
+  transition: top 0.15s ease;
+  white-space: nowrap;
+}
+
+.skip-to-content:focus {
+  top: 0;
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+/* =====================================================================
+   FIX 3 — GLOBAL FOCUS-VISIBLE UTILITY
+   All interactive elements get a visible keyboard focus ring.
+   We preserve outline:none on mouse via :focus (not :focus-visible).
+   ===================================================================== */
+
+/* Apply to nav-items, glass buttons, ripple elements */
+.nav-item:focus-visible,
+.ripple:focus-visible {
+  outline: 2px solid var(--accent-blue);
+  outline-offset: 2px;
+}
+
+/* Fix 3: The <aside> in ChatDrawer uses outline-none; when it receives
+   programmatic focus via tabIndex=-1 (not keyboard) that is intentional.
+   We suppress the ring only for mouse-focused elements. */
+[tabindex="-1"]:focus {
+  outline: none;
+}
+
+/* =====================================================================
+   SCREEN-READER UTILITY (sr-only)
+   Equivalent to Tailwind's sr-only — visually hidden but accessible.
+   ===================================================================== */
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border-width: 0;
+}
+
 /* Light mode overrides */
 html.light {
   --bg-base:        #f0f9ff;
@@ -91,7 +158,8 @@ html.light {
 
   --text-primary:   #0c1a2e;
   --text-secondary: #0369a1;
-  --text-muted:     #64748b;
+  /* Fix 7: Darkened from #64748b to #475569 for 5.4:1 contrast on white (#f0f9ff) */
+  --text-muted:     #475569;
   --text-faint:     #bae6fd;
 
   --brand-glow:     rgba(14, 165, 233, 0.08);
@@ -259,6 +327,13 @@ html.light .glass-panel-heavy {
   box-shadow: 0 4px 20px rgba(56, 189, 248, 0.3);
 }
 
+/* Fix 3: Visible focus ring for keyboard navigation on primary buttons */
+.btn-primary:focus-visible {
+  outline: 2px solid var(--accent-blue);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.25);
+}
+
 .btn-primary:active { transform: translateY(0) scale(0.98); }
 
 html.light .btn-primary { color: #fff; }
@@ -285,6 +360,12 @@ html.light .btn-primary { color: #fff; }
   background: var(--brand-glow);
   border-color: var(--border-strong);
   color: var(--accent-blue);
+}
+
+/* Fix 3: Visible focus ring for keyboard navigation on ghost buttons */
+.btn-ghost:focus-visible {
+  outline: 2px solid var(--accent-blue);
+  outline-offset: 2px;
 }
 
 /* Ripple effect */
@@ -431,6 +512,9 @@ html.light .badge-shopping  { background: rgba(147,51,234,0.08); color: #7c3aed;
   color: var(--text-primary);
   font-size: 0.813rem;
   font-family: var(--font-body);
+  /* Fix 3: Do NOT use outline:none — use outline+box-shadow on :focus-visible
+     so keyboard users see a focus ring, but mouse users do not get an
+     unsolicited ring (focus-visible is keyboard-intent-only). */
   outline: none;
   transition: border-color 0.2s, box-shadow 0.2s;
 }
@@ -439,6 +523,13 @@ html.light .badge-shopping  { background: rgba(147,51,234,0.08); color: #7c3aed;
 .input:focus {
   border-color: var(--accent-blue);
   box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.12);
+}
+/* Fix 3: Consistent focus-visible ring for keyboard users */
+.input:focus-visible {
+  border-color: var(--accent-blue);
+  box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.25);
+  outline: 2px solid var(--accent-blue);
+  outline-offset: 2px;
 }
 
 /* =====================================================================

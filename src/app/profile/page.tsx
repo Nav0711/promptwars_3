@@ -108,14 +108,15 @@ export default function ProfilePage() {
             </div>
           </div>
 
-          {/* Theme toggle */}
+          {/* Theme toggle — Fix 2: aria-label for icon-only button */}
           <button
             onClick={toggleTheme}
+            aria-label={isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
             className="p-2.5 rounded-xl transition-all ripple"
             style={{ border: '1px solid var(--border-subtle)', color: 'var(--text-muted)' }}
           >
             <motion.div animate={{ rotate: isDark ? 0 : 180 }} transition={{ duration: 0.4, type: 'spring' }}>
-              {isDark ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
+              {isDark ? <Moon className="w-4 h-4" aria-hidden="true" /> : <Sun className="w-4 h-4" aria-hidden="true" />}
             </motion.div>
           </button>
         </div>
@@ -235,32 +236,37 @@ export default function ProfilePage() {
                   </div>
 
                   <div className="space-y-4">
+                    {/* Fix 1: Associate label with input via htmlFor/id */}
                     <div>
-                      <label className="block text-xs font-semibold font-heading mb-1.5" style={{ color: 'var(--text-secondary)' }}>
+                      <label htmlFor="profile-display-name" className="block text-xs font-semibold font-heading mb-1.5" style={{ color: 'var(--text-secondary)' }}>
                         Display Name
                       </label>
                       <div className="relative">
-                        <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--text-muted)' }} />
+                        <User className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" aria-hidden="true" style={{ color: 'var(--text-muted)' }} />
                         <input
+                          id="profile-display-name"
                           type="text"
                           value={name}
                           onChange={e => setName(e.target.value)}
                           className="input pl-9"
                           placeholder="Your display name"
+                          autoComplete="name"
                         />
                       </div>
                     </div>
 
                     <div>
-                      <label className="block text-xs font-semibold font-heading mb-1.5" style={{ color: 'var(--text-secondary)' }}>
+                      <label htmlFor="profile-email" className="block text-xs font-semibold font-heading mb-1.5" style={{ color: 'var(--text-secondary)' }}>
                         Email Address
                       </label>
                       <div className="relative">
-                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: 'var(--text-muted)' }} />
+                        <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" aria-hidden="true" style={{ color: 'var(--text-muted)' }} />
                         <input
+                          id="profile-email"
                           type="email"
                           value={user?.email || ''}
                           readOnly
+                          aria-readonly="true"
                           className="input pl-9 cursor-not-allowed"
                           style={{ opacity: 0.6 }}
                         />
@@ -359,11 +365,15 @@ export default function ProfilePage() {
 
                     <div>
                       <div className="flex justify-between mb-2">
-                        <label className="text-xs font-heading font-semibold" style={{ color: 'var(--text-secondary)' }}>Weekly distance</label>
-                        <span className="text-xs font-mono font-bold" style={{ color: 'var(--accent-blue)' }}>{weeklyKm} km</span>
+                        {/* Fix 1: label associated to range slider */}
+                        <label htmlFor="profile-weekly-km" className="text-xs font-heading font-semibold" style={{ color: 'var(--text-secondary)' }}>Weekly distance</label>
+                        <span className="text-xs font-mono font-bold" aria-hidden="true" style={{ color: 'var(--accent-blue)' }}>{weeklyKm} km</span>
                       </div>
-                      <input type="range" min="0" max="500" step="5" value={weeklyKm}
+                      <input
+                        id="profile-weekly-km"
+                        type="range" min="0" max="500" step="5" value={weeklyKm}
                         onChange={e => setWeeklyKm(+e.target.value)}
+                        aria-label={`Weekly driving distance: ${weeklyKm} km`}
                         className="w-full h-1.5 rounded-full appearance-none cursor-pointer"
                         style={{ accentColor: 'var(--accent-blue)', background: 'var(--bg-elevated)' }}
                       />
@@ -394,11 +404,15 @@ export default function ProfilePage() {
 
                     <div>
                       <div className="flex justify-between mb-2">
-                        <label className="text-xs font-heading font-semibold" style={{ color: 'var(--text-secondary)' }}>Monthly electricity</label>
-                        <span className="text-xs font-mono font-bold" style={{ color: 'var(--accent-blue)' }}>{electricityKwh} kWh</span>
+                        {/* Fix 1: label associated to range slider */}
+                        <label htmlFor="profile-electricity-kwh" className="text-xs font-heading font-semibold" style={{ color: 'var(--text-secondary)' }}>Monthly electricity</label>
+                        <span className="text-xs font-mono font-bold" aria-hidden="true" style={{ color: 'var(--accent-blue)' }}>{electricityKwh} kWh</span>
                       </div>
-                      <input type="range" min="0" max="1000" step="10" value={electricityKwh}
+                      <input
+                        id="profile-electricity-kwh"
+                        type="range" min="0" max="1000" step="10" value={electricityKwh}
                         onChange={e => setElectricityKwh(+e.target.value)}
+                        aria-label={`Monthly electricity usage: ${electricityKwh} kWh`}
                         className="w-full h-1.5 rounded-full appearance-none cursor-pointer"
                         style={{ accentColor: 'var(--accent-blue)', background: 'var(--bg-elevated)' }}
                       />
@@ -426,8 +440,8 @@ export default function ProfilePage() {
                   </h3>
 
                   {/* Theme */}
-                  <div className="space-y-3">
-                    <label className="text-xs font-heading font-semibold" style={{ color: 'var(--text-secondary)' }}>Theme</label>
+                  <div className="space-y-3" role="group" aria-labelledby="theme-group-label">
+                    <p id="theme-group-label" className="text-xs font-heading font-semibold" style={{ color: 'var(--text-secondary)' }}>Theme</p>
                     <div className="grid grid-cols-2 gap-3">
                       {[
                         { val: 'dark', label: 'Dark Mode', icon: Moon, desc: 'Midnight grid · Light blue on black' },
@@ -439,13 +453,15 @@ export default function ProfilePage() {
                           <button
                             key={t.val}
                             onClick={toggleTheme}
+                            aria-pressed={isActive}
+                            aria-label={`${t.label}${isActive ? ' (active)' : ''}`}
                             className="p-4 rounded-xl text-left transition-all cursor-pointer"
                             style={{
                               border: `1px solid ${isActive ? 'var(--accent-blue)' : 'var(--border-subtle)'}`,
                               background: isActive ? 'var(--brand-glow-lg)' : 'var(--bg-elevated)',
                             }}
                           >
-                            <Icon className="w-5 h-5 mb-2" style={{ color: isActive ? 'var(--accent-blue)' : 'var(--text-muted)' }} />
+                            <Icon className="w-5 h-5 mb-2" aria-hidden="true" style={{ color: isActive ? 'var(--accent-blue)' : 'var(--text-muted)' }} />
                             <p className="text-xs font-heading font-bold" style={{ color: isActive ? 'var(--accent-blue)' : 'var(--text-primary)' }}>{t.label}</p>
                             <p className="text-[10px] font-mono mt-0.5" style={{ color: 'var(--text-muted)' }}>{t.desc}</p>
                           </button>
@@ -456,7 +472,8 @@ export default function ProfilePage() {
 
                   {/* Notification preferences (UI only) */}
                   <div className="space-y-3">
-                    <label className="text-xs font-heading font-semibold" style={{ color: 'var(--text-secondary)' }}>Notifications</label>
+                    {/* Fix 8: Not a form control label — use <p> not <label> */}
+                    <p className="text-xs font-heading font-semibold" style={{ color: 'var(--text-secondary)' }}>Notifications</p>
                     {[
                       { label: 'Weekly digest every Monday', defaultOn: true },
                       { label: '7-day swap check-in reminders', defaultOn: true },

@@ -46,10 +46,19 @@ export default function RegisterPage() {
         // Fallback
         router.push('/login?registered=true');
       }
-    } catch (err: any) {
-      setErrorMsg(err.message);
+    } catch (err: unknown) {
+      setErrorMsg(err instanceof Error ? err.message : 'Registration failed');
       setLoading(false);
     }
+  };
+
+  const inputFocusStyle = (e: React.FocusEvent<HTMLInputElement>) => {
+    e.currentTarget.style.borderColor = 'var(--accent-blue)';
+    e.currentTarget.style.boxShadow = '0 0 0 3px rgba(56,189,248,0.12)';
+  };
+  const inputBlurStyle = (e: React.FocusEvent<HTMLInputElement>) => {
+    e.currentTarget.style.borderColor = 'var(--border-subtle)';
+    e.currentTarget.style.boxShadow = 'none';
   };
 
   return (
@@ -66,49 +75,75 @@ export default function RegisterPage() {
           <p className="text-sm" style={{ color: 'var(--text-muted)' }}>Create an account to track your footprint.</p>
         </div>
 
-        {errorMsg && (
-          <div className="mb-4 p-3 rounded-xl text-sm" style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
-            {errorMsg}
-          </div>
-        )}
+        {/* Fix 6: aria-live region for registration errors */}
+        <div aria-live="polite" aria-atomic="true">
+          {errorMsg && (
+            <div
+              role="alert"
+              className="mb-4 p-3 rounded-xl text-sm"
+              style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: '1px solid rgba(239, 68, 68, 0.2)' }}
+            >
+              {errorMsg}
+            </div>
+          )}
+        </div>
 
         <form onSubmit={handleRegister} className="space-y-4">
+          {/* Fix 1: Associate label with input via htmlFor/id */}
           <div className="space-y-1">
-            <label className="text-xs font-semibold font-heading" style={{ color: 'var(--text-secondary)' }}>Full Name</label>
+            <label htmlFor="register-name" className="text-xs font-semibold font-heading" style={{ color: 'var(--text-secondary)' }}>
+              Full Name
+            </label>
             <input
+              id="register-name"
               type="text"
               required
               placeholder="e.g. Navdeep"
               value={name}
               onChange={(e) => setName(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl text-sm transition-all outline-none"
-              style={{ background: 'var(--bg-base)', border: '1px solid var(--border-subtle)', color: 'var(--text-primary)' }}
+              autoComplete="name"
+              className="w-full px-4 py-3 rounded-xl text-sm transition-all"
+              style={{ background: 'var(--bg-base)', border: '1px solid var(--border-subtle)', color: 'var(--text-primary)', outline: 'none', boxShadow: 'none' }}
+              onFocus={inputFocusStyle}
+              onBlur={inputBlurStyle}
             />
           </div>
           
           <div className="space-y-1">
-            <label className="text-xs font-semibold font-heading" style={{ color: 'var(--text-secondary)' }}>Email Address</label>
+            <label htmlFor="register-email" className="text-xs font-semibold font-heading" style={{ color: 'var(--text-secondary)' }}>
+              Email Address
+            </label>
             <input
+              id="register-email"
               type="email"
               required
               placeholder="e.g. navdeep@ecoloop.org"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl text-sm transition-all outline-none"
-              style={{ background: 'var(--bg-base)', border: '1px solid var(--border-subtle)', color: 'var(--text-primary)' }}
+              autoComplete="email"
+              className="w-full px-4 py-3 rounded-xl text-sm transition-all"
+              style={{ background: 'var(--bg-base)', border: '1px solid var(--border-subtle)', color: 'var(--text-primary)', outline: 'none', boxShadow: 'none' }}
+              onFocus={inputFocusStyle}
+              onBlur={inputBlurStyle}
             />
           </div>
 
           <div className="space-y-1">
-            <label className="text-xs font-semibold font-heading" style={{ color: 'var(--text-secondary)' }}>Password</label>
+            <label htmlFor="register-password" className="text-xs font-semibold font-heading" style={{ color: 'var(--text-secondary)' }}>
+              Password
+            </label>
             <input
+              id="register-password"
               type="password"
               required
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-3 rounded-xl text-sm transition-all outline-none"
-              style={{ background: 'var(--bg-base)', border: '1px solid var(--border-subtle)', color: 'var(--text-primary)' }}
+              autoComplete="new-password"
+              className="w-full px-4 py-3 rounded-xl text-sm transition-all"
+              style={{ background: 'var(--bg-base)', border: '1px solid var(--border-subtle)', color: 'var(--text-primary)', outline: 'none', boxShadow: 'none' }}
+              onFocus={inputFocusStyle}
+              onBlur={inputBlurStyle}
             />
           </div>
 
@@ -121,7 +156,7 @@ export default function RegisterPage() {
             >
               {loading ? (
                 <>
-                  <Loader2 className="w-4 h-4 animate-spin" /> Creating account...
+                  <Loader2 className="w-4 h-4 animate-spin" aria-hidden="true" /> Creating account...
                 </>
               ) : (
                 'Sign Up'
