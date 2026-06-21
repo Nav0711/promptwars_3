@@ -99,11 +99,12 @@ function AppProviderInner({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     // Redirect if not onboarded
     if (!loading) {
-      if (!user && pathname !== '/onboarding' && pathname !== '/login') {
+      const isAuthPage = pathname === '/login' || pathname === '/register';
+      if (!user && pathname !== '/onboarding' && !isAuthPage) {
         router.push('/login');
       } else if (user && user.baselineFootprintKgCO2e === 0 && pathname !== '/onboarding') {
         router.push('/onboarding');
-      } else if (user && user.baselineFootprintKgCO2e > 0 && (pathname === '/onboarding' || pathname === '/login')) {
+      } else if (user && user.baselineFootprintKgCO2e > 0 && (pathname === '/onboarding' || isAuthPage)) {
         router.push('/dashboard');
       }
     }
